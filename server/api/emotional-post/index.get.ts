@@ -1,5 +1,6 @@
 import { fetchPost } from "@/server/facades/database/emotional-post";
 import { EmotionalPost } from "@/types/Domain/EmotionalPost";
+import FetchPostResponse from "@/types/Models/FetchPosts/FetchPostResponse";
 
 export default defineEventHandler(async (event) => {
   try {
@@ -21,7 +22,3 @@ export default defineEventHandler(async (event) => {
     console.error(error);
   }
 });
-
-interface FetchPostResponse {
-  posts: EmotionalPost[];
-}
