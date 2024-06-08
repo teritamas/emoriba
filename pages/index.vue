@@ -1,10 +1,10 @@
 <template>
-  <application-title class="absolute top-4 left-4"></application-title>
+  <application-title class="absolute top-4 left-4" />
   <div>
-    <ar-windows></ar-windows>
+    <ar-windows />
   </div>
   <div class="fixed right-4 bottom-4">
-    <register-modal @registerButtonClick="postComment" />
+    <register-modal @register-button-click="postComment" />
   </div>
   <div class="absolute top-4 right-4 bg-gray-200 text-xs p-2 rounded-lg">
     <p>longitude: {{ longitude }}</p>
