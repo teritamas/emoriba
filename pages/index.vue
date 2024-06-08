@@ -23,8 +23,9 @@
         longitude.value = position.coords.longitude;
         latitude.value = position.coords.latitude;
       });
-      // TODO: 実装中
-      // const res = await fetchEmotionalPosts();
+      // どちらかが-1の場合は位置情報が取得できていないので処理を実行しない
+      if (longitude.value === -1 || latitude.value === -1) return;
+      const res = await fetchEmotionalPosts();
     }, 2000);
   });
 
@@ -36,7 +37,7 @@
     // 位置情報はクエリパラメータとして送信する
     try {
       const res = await fetch(
-        `api/emotional-posts?$longitude=${longitude.value}&latitude=${latitude.value}`,
+        `api/emotional-post?longitude=${longitude.value}&latitude=${latitude.value}`,
         {
           method: "get",
           headers: {
@@ -44,6 +45,7 @@
           },
         }
       );
+      console.log(res);
       return res.json();
     } catch (error) {
       return {};
