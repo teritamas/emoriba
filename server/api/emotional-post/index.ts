@@ -1,5 +1,5 @@
 import { fetchPost } from "@/server/facades/database/emotional-post";
-import { EmotionalPost } from "@/server/domain/EmotionalPost";
+import { EmotionalPost } from "@/domain/EmotionalPost";
 
 export default defineEventHandler(async (event) => {
   try {
