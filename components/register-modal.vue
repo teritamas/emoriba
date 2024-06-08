@@ -3,23 +3,19 @@
   <div class="flex justify-center p-4">
     <button
       id="button"
-      data-modal-toggle="register-modal"
-      data-modal-target="register-modal"
       type="button"
       class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 mr-2 mb-2 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800"
+      @click="toggleModal"
     >
-      Show modal
+      {{ showModal ? "モーダルを閉じる" : "モーダルを開く" }}
     </button>
   </div>
 
   <!-- Main modal -->
-  <div
-    id="register-modal"
-    tabindex="100"
-    aria-hidden="true"
-    class="fixed top-0 left-0 right-0 hidden w-full p-4 overflow-x-hidden overflow-y-auto md:inset-0 h-[calc(100%-1rem)] max-h-full custom-z-index"
-  >
-    <div class="relative w-full max-w-2xl max-h-full">
+  <div class="fixed top-4 left-0 right-0 z-50" v-if="showModal">
+    <div
+      class="relative border bg-white rounded-lg border-gray-700 w-11/12 md:w-9/12 lg:7/12 m-auto"
+    >
       <!-- Modal content -->
       <div class="relative bg-white rounded-lg shadow dark:bg-gray-700">
         <!-- Modal header -->
@@ -29,13 +25,14 @@
           <h3
             class="text-xl font-semibold text-gray-900 lg:text-2xl dark:text-white"
           >
-            Terms of Service
+            コメントを投稿してください！
           </h3>
           <button
             id="closeButton"
             data-modal-hide="modal"
             type="button"
             class="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm p-1.5 ml-auto inline-flex items-center dark:hover:bg-gray-600 dark:hover:text-white"
+            @click="toggleModal"
           >
             <svg
               class="w-5 h-5"
@@ -54,16 +51,7 @@
         <!-- Modal body -->
         <div class="p-6 space-y-6">
           <p class="text-base leading-relaxed text-gray-500 dark:text-gray-400">
-            With less than a month to go before the European Union enacts new
-            consumer privacy laws for its citizens, companies around the world
-            are updating their terms of service agreements to comply.
-          </p>
-          <p class="text-base leading-relaxed text-gray-500 dark:text-gray-400">
-            The European Union’s General Data Protection Regulation (G.D.P.R.)
-            goes into effect on May 25 and is meant to ensure a common set of
-            data rights in the European Union. It requires organizations to
-            notify users as soon as possible of high-risk data breaches that
-            could personally affect them.
+            ここにボックスを配置する
           </p>
         </div>
         <!-- Modal footer -->
@@ -74,13 +62,14 @@
             type="button"
             class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
           >
-            I accept
+            送信
           </button>
           <button
             type="button"
             class="text-gray-500 bg-white hover:bg-gray-100 focus:ring-4 focus:outline-none focus:ring-blue-300 rounded-lg border border-gray-200 text-sm font-medium px-5 py-2.5 hover:text-gray-900 focus:z-10 dark:bg-gray-700 dark:text-gray-300 dark:border-gray-500 dark:hover:text-white dark:hover:bg-gray-600"
+            @click="toggleModal"
           >
-            Decline
+            モーダルを閉じる
           </button>
         </div>
       </div>
@@ -88,10 +77,13 @@
   </div>
 </template>
 
-<script lang="ts"></script>
+<script setup lang="ts">
+  const showModal = ref(false);
 
-<style>
-  .custom-z-index {
-    z-index: 1000;
-  }
-</style>
+  // True/Falseを入れ替える
+  const toggleModal = () => {
+    showModal.value = !showModal.value;
+  };
+</script>
+
+<style></style>
