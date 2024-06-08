@@ -6,4 +6,13 @@
   </div>
 </template>
 
-<style></style>
+<style>
+  body,
+  #__nuxt,
+  #__layout,
+  .main {
+    height: 100%;
+    margin: 0px;
+    overflow: hidden;
+  }
+</style>
