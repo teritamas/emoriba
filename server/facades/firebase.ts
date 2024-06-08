@@ -1,6 +1,6 @@
-import { initializeApp, cert } from "firebase-admin/app";
+import { initializeApp } from "firebase-admin/app";
 import { getFirestore } from "firebase-admin/firestore";
-import { getStorage } from "firebase-admin/storage";
+// import { getStorage } from "firebase-admin/storage";
 import * as geofirestore from "geofirestore";
 
 const app = initializeApp({

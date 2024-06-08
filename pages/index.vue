@@ -1,10 +1,10 @@
 <template>
-  <application-title class="absolute top-4 left-4"></application-title>
+  <application-title class="absolute top-4 left-4" />
   <div>
-    <ar-windows></ar-windows>
+    <ar-windows />
   </div>
   <div class="fixed right-4 bottom-4">
-    <register-modal />
+    <register-modal @register-button-click="postComment" />
   </div>
   <div class="absolute top-4 right-4 bg-gray-200 text-xs p-2 rounded-lg">
     <p>longitude: {{ longitude }}</p>
@@ -13,6 +13,8 @@
 </template>
 
 <script setup lang="ts">
+  import type RegisterCommentDto from "@/types/Models/RegisterComment/RegisterCommentDto";
+  import type RegisterCommentRequest from "@/types/Models/RegisterComment/RegisterCommentRequest";
   const longitude = ref(-1);
   const latitude = ref(-1);
 
@@ -51,6 +53,34 @@
       return {};
     } finally {
       isLoading.value = false;
+    }
+  };
+
+  // コメントを投稿する
+  const postComment = async (dto: RegisterCommentDto) => {
+    console.log(dto, "hoge");
+    // 位置情報とコメントを送信する
+    try {
+      const formData = new FormData();
+      formData.append(
+        "request",
+        JSON.stringify({
+          coordinates: {
+            longitude: longitude.value,
+            latitude: latitude.value,
+          },
+          comment: dto.comment,
+        } as RegisterCommentRequest)
+      );
+      const res = await fetch("api/emotional-post", {
+        method: "post",
+        headers: {},
+        body: formData,
+      });
+      console.log(res);
+      return res.json();
+    } catch (error) {
+      return {};
     }
   };
 </script>
