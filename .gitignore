@@ -25,3 +25,6 @@ logs
 
 # GCP Key
 key.json
+
+# Firebase
+.firebase

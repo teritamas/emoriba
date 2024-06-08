@@ -1,5 +1,16 @@
 // https://nuxt.com/docs/api/configuration/nuxt-config
 export default defineNuxtConfig({
+  // Firebase Functionのデプロイのため必要
+  nitro: {
+    firebase: {
+      nodeVersion: "20",
+      gen: 2,
+      httpsOptions: {
+        region: "us-central1",
+        maxInstances: 3,
+      },
+    },
+  },
   devtools: { enabled: true },
   modules: ["@nuxtjs/tailwindcss"],
   app: {
