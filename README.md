@@ -1,78 +1,61 @@
-# Nuxt 3 Minimal Starter
+[![Deploy to Firebase Hosting on merge](https://github.com/teritamas/en-xross-xr-hackathon/actions/workflows/firebase-hosting-merge.yml/badge.svg?branch=main)](https://github.com/teritamas/en-xross-xr-hackathon/actions/workflows/firebase-hosting-merge.yml)
 
-Look at the [Nuxt 3 documentation](https://nuxt.com/docs/getting-started/introduction) to learn more.
+# En Xross By Tokyo Dome City
 
-## Setup
+## Quick Start
 
-Make sure to install the dependencies:
+### 1. 必要情報の取得
+
+はじめに下記のサービスにアクセスし、利用に必要な情報を取得する。API キーやアカウントが存在しない場合は作成する。
+
+| サービス名   | URL                               | 必要な情報             |
+| ------------ | --------------------------------- | ---------------------- |
+| Google Cloud | https://console.cloud.google.com/ | サービスアカウントキー |
+
+#### 1-1. `.env`の作成
+
+`.env.example`をコピーして、`.env`を作成する。その後、それぞれのサービスから取得した情報を`.env`に設定する。
 
 ```bash
-# npm
+# GCPの設定
+GOOGLE_APPLICATION_CREDENTIALS=${GCPのサービスアカウントキーを配置したパス}
+```
+
+### 2. サーバの起動
+
+必要ライブラリをインストール。
+
+```bash
 npm install
-
-# pnpm
-pnpm install
-
-# yarn
-yarn install
-
-# bun
-bun install
 ```
 
-## Development Server
-
-Start the development server on `http://localhost:3000`:
+開発用サーバを起動する。
 
 ```bash
-# npm
 npm run dev
-
-# pnpm
-pnpm run dev
-
-# yarn
-yarn dev
-
-# bun
-bun run dev
 ```
 
-## Production
+実行後、以下の URL にアクセスする。
 
-Build the application for production:
+- http://localhost:3000
+
+## デプロイ
+
+本アプリケーションは、Firebaseにデプロイされている。デプロイを実行する場合、以下のコマンドを実行する。
 
 ```bash
-# npm
-npm run build
-
-# pnpm
-pnpm run build
-
-# yarn
-yarn build
-
-# bun
-bun run build
+npm run build -- --preset=firebase
+firebase deploy --only functions:server,hosting
 ```
 
-Locally preview production build:
+## その他
 
-```bash
-# npm
-npm run preview
+### AR.jsの参考になる情報
 
-# pnpm
-pnpm run preview
+随時追加予定
 
-# yarn
-yarn preview
-
-# bun
-bun run preview
-```
-
-Check out the [deployment documentation](https://nuxt.com/docs/getting-started/deployment) for more information.
+- [Introduction – A-Frame](https://aframe.io/docs/1.5.0/introduction/)
+- [AR.js Documentation](https://ar-js-org.github.io/AR.js-Docs/)
 
 ### 利用しているフォント
 
