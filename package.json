@@ -12,6 +12,7 @@
     "fix": "eslint --fix --ignore-path .gitignore ."
   },
   "dependencies": {
+    "aframe-japanese-font": "^0.1.4",
     "firebase": "^10.12.2",
     "firebase-admin": "^12.1.1",
     "firebase-functions": "^5.0.1",

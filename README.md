@@ -73,3 +73,9 @@ bun run preview
 ```
 
 Check out the [deployment documentation](https://nuxt.com/docs/getting-started/deployment) for more information.
+
+### 利用しているフォント
+
+以下のパッケージより「ふい字」を利用している
+
+- https://github.com/studioTeaTwo/aframe-japanese-font
