@@ -13,7 +13,8 @@
 </template>
 
 <script setup lang="ts">
-  import { type RegisterCommentDto } from "@/types/Models/RegisterComment/RegisterCommentEntryDto";
+  import type RegisterCommentDto from "@/types/Models/RegisterComment/RegisterCommentDto";
+  import type RegisterCommentRequest from "@/types/Models/RegisterComment/RegisterCommentRequest";
   const longitude = ref(-1);
   const latitude = ref(-1);
 
@@ -26,7 +27,7 @@
       });
       // どちらかが-1の場合は位置情報が取得できていないので処理を実行しない
       if (longitude.value === -1 || latitude.value === -1) return;
-      // const res = await fetchEmotionalPosts();
+      const res = await fetchEmotionalPosts();
     }, 2000);
   });
 
@@ -60,18 +61,21 @@
     console.log(dto, "hoge");
     // 位置情報とコメントを送信する
     try {
-      const res = await fetch("api/emotional-post", {
-        method: "post",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
+      const formData = new FormData();
+      formData.append(
+        "request",
+        JSON.stringify({
           coordinates: {
             longitude: longitude.value,
             latitude: latitude.value,
           },
           comment: dto.comment,
-        }),
+        } as RegisterCommentRequest)
+      );
+      const res = await fetch("api/emotional-post", {
+        method: "post",
+        headers: {},
+        body: formData,
       });
       console.log(res);
       return res.json();
