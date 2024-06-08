@@ -1,17 +1,9 @@
 <template>
   <div>
     <svg ref="svg" />
-    <p
-      id="text"
-      ref="text"
-      class="text"
-    />
-    <p
-      id="offscreen-text"
-      ref="offscreenText"
-      class="offscreen-text"
-    />
-    <span>いま、どんな気持ち？みんなにシェアしよう！</span>
+    <p id="text" ref="text" class="text" />
+    <p id="offscreen-text" ref="offscreenText" class="offscreen-text" />
+    <span class="font-bold">今の気持ちをシェアしよう！</span>
     <div class="flex">
       <label
         for="dropzone-file"
@@ -38,11 +30,7 @@
             </g>
           </svg>
         </div>
-        <input
-          id="dropzone-file"
-          type="file"
-          class="hidden"
-        >
+        <input id="dropzone-file" type="file" class="hidden" />
       </label>
       <input
         id="input"
@@ -53,7 +41,7 @@
         autofocus
         maxlength="30"
         @keyup="onInputChange"
-      >
+      />
       <button
         type="button"
         class="w-15 h-15 text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 rounded-lg text-sm px-2 py-2 text-center"
@@ -81,7 +69,7 @@
 
 <script setup lang="ts">
 import { type RegisterCommentDto } from "@/types/Models/RegisterComment/RegisterCommentDto";
-import { TweenLite, Power3, Back, Power1, Power2 } from "gsap";
+import { gsap, Power3, Back, Power1, Power2 } from "gsap";
 
 class SVGElement {
   element: Element;
@@ -193,7 +181,7 @@ const resizeLetters = () => {
 const positionLetters = () => {
   letters.forEach((letter) => {
     const timing = letter.shift ? 0.1 : 0;
-    TweenLite.to(letter.onScreen, timing, {
+    gsap.to(letter.onScreen, timing, {
       x: letter.offScreen.offsetLeft + "px",
       ease: Power3.easeInOut,
     });
@@ -203,18 +191,18 @@ const positionLetters = () => {
 
 const animateLetterIn = (letter: HTMLElement) => {
   const yOffset = (0.5 + Math.random() * 0.5) * textSize;
-  TweenLite.fromTo(letter, 0.4, { scale: 0 }, { scale: 1, ease: Back.easeOut });
-  TweenLite.fromTo(
+  gsap.fromTo(letter, 0.4, { scale: 0 }, { scale: 1, ease: Back.easeOut });
+  gsap.fromTo(
     letter,
     0.4,
     { opacity: 0 },
     { opacity: 1, ease: Power3.easeOut }
   );
-  TweenLite.to(letter, 0.2, { y: -yOffset, ease: Power3.easeInOut });
-  TweenLite.to(letter, 0.2, { y: 0, ease: Power3.easeInOut, delay: 0.2 });
+  gsap.to(letter, 0.2, { y: -yOffset, ease: Power3.easeInOut });
+  gsap.to(letter, 0.2, { y: 0, ease: Power3.easeInOut, delay: 0.2 });
   const rotation = -50 + Math.random() * 100;
-  TweenLite.to(letter, 0.2, { rotation: rotation, ease: Power3.easeInOut });
-  TweenLite.to(letter, 0.2, {
+  gsap.to(letter, 0.2, { rotation: rotation, ease: Power3.easeInOut });
+  gsap.to(letter, 0.2, {
     rotation: 0,
     ease: Power3.easeInOut,
     delay: 0.2,
@@ -247,8 +235,8 @@ const addTri = (x0: number, y0: number, shade: string) => {
   const offset = triSize * scale;
   tri.set("points", `0,0 ${triSize * 2},0 ${triSize},${triSize * 2}`);
   tri.style("fill", shade);
-  svg.value!.element.appendChild(tri.element);
-  TweenLite.fromTo(
+  svg.value!.appendChild(tri.element);
+  gsap.fromTo(
     tri.element,
     0.6,
     {
@@ -264,7 +252,7 @@ const addTri = (x0: number, y0: number, shade: string) => {
       opacity: 0,
       ease: Power1.easeInOut,
       onComplete: () => {
-        svg.value!.element.removeChild(tri.element);
+        svg.value!.removeChild(tri.element);
       },
     }
   );
@@ -282,8 +270,8 @@ const addCirc = (x0: number, y0: number) => {
   const circSize = textSize * 0.05 * Math.random();
   circ.set("r", circSize);
   circ.style("fill", "#eee");
-  svg.value!.element.appendChild(circ.element);
-  TweenLite.fromTo(
+  svg.value!.appendChild(circ.element);
+  gsap.fromTo(
     circ.element,
     0.6,
     { x: x - circSize, y: y - circSize, opacity: 1 },
@@ -293,7 +281,7 @@ const addCirc = (x0: number, y0: number) => {
       opacity: 0,
       ease: Power1.easeInOut,
       onComplete: () => {
-        svg.value!.element.removeChild(circ.element);
+        svg.value!.removeChild(circ.element);
       },
     }
   );
@@ -340,7 +328,7 @@ const animateLetterOut = (
   },
   i: number
 ) => {
-  TweenLite.to(letter.onScreen, 0.1, {
+  gsap.to(letter.onScreen, 0.1, {
     scale: 0,
     opacity: 0,
     ease: Power2.easeIn,
