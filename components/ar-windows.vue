@@ -1,6 +1,11 @@
 <template>
   <!-- <div class="fixed left-0 top-0 z-0"> -->
-  <video class="min-h-dvh overflow-y-hidden" ref="video" autoplay playsinline />
+  <video
+    class="min-h-full min-w-full overflow-y-hidden"
+    ref="video"
+    autoplay
+    playsinline
+  />
   <!-- </div> -->
 </template>
 
