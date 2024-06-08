@@ -8,9 +8,7 @@
           <div />
           <div />
           <div />
-          <p class="font-bold text-white">
-            ちょっと待ってね🙇
-          </p>
+          <p class="font-bold text-white">ちょっと待ってね🙇</p>
         </div>
       </div>
     </div>

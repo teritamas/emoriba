@@ -1,27 +1,25 @@
 <template>
-  <!-- <div class="fixed left-0 top-0 z-0"> -->
   <video
     ref="video"
     class="min-h-full min-w-full overflow-y-hidden"
     autoplay
     playsinline
-  />
-  <!-- </div> -->
+  ></video>
 </template>
 
-<script lang="ts" setup>
-  // 起動時にカメラを起動する
-  const video = ref<HTMLVideoElement | null>(null);
-  onMounted(() => {
-    navigator.mediaDevices
-      .getUserMedia({ video: true })
-      .then((stream) => {
-        if (video.value) {
-          video.value.srcObject = stream;
-        }
-      })
-      .catch((err) => {
-        console.error(err);
-      });
-  });
+<script setup lang="ts">
+// 起動時にカメラを起動する
+const video = ref<HTMLVideoElement | null>(null)
+onMounted(() => {
+  navigator.mediaDevices
+    .getUserMedia({ video: true })
+    .then((stream) => {
+      if (video.value) {
+        video.value.srcObject = stream
+      }
+    })
+    .catch((err) => {
+      console.error(err)
+    })
+})
 </script>

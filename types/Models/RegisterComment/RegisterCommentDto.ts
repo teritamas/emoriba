@@ -1,4 +1,4 @@
 export default interface RegisterCommentDto {
-  comment: string;
+  comment: string
   // 画像も登録できるようにしたい
 }

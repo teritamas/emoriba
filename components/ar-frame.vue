@@ -34,13 +34,13 @@
 </template>
 
 <script setup lang="ts">
-  import type { EmotionalPost } from "~/types/Domain/EmotionalPost";
+import type { EmotionalPost } from '@/types/Domain/EmotionalPost'
 
-  const props = defineProps({
-    posts: {
-      type: Array as PropType<EmotionalPost[]>,
-      required: true,
-    },
-  });
-  const posts = props.posts;
+const props = defineProps({
+  posts: {
+    type: Array as PropType<EmotionalPost[]>,
+    required: true
+  }
+})
+const posts = props.posts
 </script>
