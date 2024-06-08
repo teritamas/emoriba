@@ -23,10 +23,11 @@ export default defineNuxtConfig({
       script: [
         { src: "https://aframe.io/releases/1.3.0/aframe.min.js" },
         {
-          src: "https://raw.githack.com/AR-js-org/AR.js/master/aframe/build/aframe-ar.js",
+          src: "https://raw.githack.com/AR-js-org/AR.js/master/aframe/build/aframe-ar-nft.js",
         },
         {
-          src: "https://raw.githack.com/donmccurdy/aframe-extras/master/dist/aframe-extras.loaders.min.js",
+          // entityにlook-at属性を追加するとカメラの方を向くようになる
+          src: "https://unpkg.com/aframe-look-at-component@0.8.0/dist/aframe-look-at-component.min.js",
         },
       ],
     },
