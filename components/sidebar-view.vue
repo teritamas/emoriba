@@ -344,8 +344,8 @@
 </template>
 
 <script setup lang="ts">
-const emits = defineEmits(["toggleSidebar"]);
+const emits = defineEmits(['toggleSidebar'])
 const closeSidebar = () => {
-  emits("toggleSidebar");
-};
+  emits('toggleSidebar')
+}
 </script>

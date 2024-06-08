@@ -2,8 +2,8 @@
   <div>
     <div class="select-box">
       <div class="selected-item" @click="toggleDropdown">
-        {{ selectedItem?.createdAt || "Select an option" }}
-        <span class="arrow">{{ isOpen ? "▲" : "▼" }}</span>
+        {{ selectedItem?.createdAt || 'Select an option' }}
+        <span class="arrow">{{ isOpen ? '▲' : '▼' }}</span>
       </div>
       <div v-if="isOpen" class="dropdown" ref="dropdown">
         <ul class="dropdown-list" ref="list">
@@ -37,77 +37,77 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref, computed, onMounted, onUnmounted } from "vue";
+import { defineComponent, ref, computed, onMounted, onUnmounted } from 'vue'
 
 interface SelectItem {
-  value: string;
-  label: string;
+  value: string
+  label: string
 }
 
 export default defineComponent({
-  name: "SmoothSelectBox",
+  name: 'SmoothSelectBox',
   props: {
     items: {
       type: Array as () => SelectItem[],
-      required: true,
+      required: true
     },
     modelValue: {
       type: String,
-      default: "",
-    },
+      default: ''
+    }
   },
-  emits: ["update:modelValue"],
+  emits: ['update:modelValue'],
   setup(props, { emit }) {
-    const isOpen = ref(false);
-    const selectedValue = ref(props.modelValue);
-    const dropdown = ref<HTMLElement | null>(null);
-    const list = ref<HTMLElement | null>(null);
+    const isOpen = ref(false)
+    const selectedValue = ref(props.modelValue)
+    const dropdown = ref<HTMLElement | null>(null)
+    const list = ref<HTMLElement | null>(null)
 
     const selectedItem = computed(() => {
-      return props.items.find((item) => item.value === selectedValue.value);
-    });
+      return props.items.find((item) => item.value === selectedValue.value)
+    })
 
     const toggleDropdown = () => {
-      isOpen.value = !isOpen.value;
-    };
+      isOpen.value = !isOpen.value
+    }
 
     const selectItem = (item: SelectItem) => {
-      selectedValue.value = item.value;
-      emit("update:modelValue", item.value);
-      isOpen.value = false;
-    };
+      selectedValue.value = item.value
+      emit('update:modelValue', item.value)
+      isOpen.value = false
+    }
 
     const handleTouchStart = (event: TouchEvent) => {
       if (list.value) {
-        list.value.dataset.touchStartY = String(event.touches[0].clientY);
-        list.value.dataset.scrollTop = String(list.value.scrollTop);
+        list.value.dataset.touchStartY = String(event.touches[0].clientY)
+        list.value.dataset.scrollTop = String(list.value.scrollTop)
       }
-    };
+    }
 
     const handleTouchMove = (event: TouchEvent) => {
       if (list.value) {
-        const touchStartY = Number(list.value.dataset.touchStartY);
-        const scrollTop = Number(list.value.dataset.scrollTop);
-        const touchMoveY = event.touches[0].clientY;
-        const deltaY = touchStartY - touchMoveY;
+        const touchStartY = Number(list.value.dataset.touchStartY)
+        const scrollTop = Number(list.value.dataset.scrollTop)
+        const touchMoveY = event.touches[0].clientY
+        const deltaY = touchStartY - touchMoveY
 
-        list.value.scrollTop = scrollTop + deltaY;
+        list.value.scrollTop = scrollTop + deltaY
       }
-    };
+    }
 
     onMounted(() => {
       if (list.value) {
-        list.value.addEventListener("touchstart", handleTouchStart);
-        list.value.addEventListener("touchmove", handleTouchMove);
+        list.value.addEventListener('touchstart', handleTouchStart)
+        list.value.addEventListener('touchmove', handleTouchMove)
       }
-    });
+    })
 
     onUnmounted(() => {
       if (list.value) {
-        list.value.removeEventListener("touchstart", handleTouchStart);
-        list.value.removeEventListener("touchmove", handleTouchMove);
+        list.value.removeEventListener('touchstart', handleTouchStart)
+        list.value.removeEventListener('touchmove', handleTouchMove)
       }
-    });
+    })
 
     return {
       isOpen,
@@ -116,10 +116,10 @@ export default defineComponent({
       selectItem,
       selectedItem,
       dropdown,
-      list,
-    };
-  },
-});
+      list
+    }
+  }
+})
 </script>
 
 <style scoped>

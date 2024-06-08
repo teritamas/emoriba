@@ -68,14 +68,14 @@
 </template>
 
 <script setup lang="ts">
-import { type RegisterCommentDto } from "@/types/Models/RegisterComment/RegisterCommentDto";
-import { gsap, Power3, Back, Power1, Power2 } from "gsap";
+import type RegisterCommentDto from '@/types/Models/RegisterComment/RegisterCommentDto'
+import { gsap, Power3, Back, Power1, Power2 } from 'gsap'
 
 class SVGElement {
-  element: Element;
+  element: Element
 
   constructor(element: Element) {
-    this.element = element;
+    this.element = element
   }
 
   set(attributeName: string, value: string) {
@@ -83,159 +83,152 @@ class SVGElement {
   }
 
   style(property: string, value: string) {
-    (this.element as SVGElement).style[property] = value;
+    ;(this.element as SVGElement).style[property] = value
   }
 }
 
 const selectSVG = (id: string) => {
-  const el = document.getElementById(id);
-  return new SVGElement(el);
-};
+  const el = document.getElementById(id)
+  return new SVGElement(el)
+}
 
 const createSVG = (type: string) => {
-  const el = document.createElementNS("http://www.w3.org/2000/svg", type);
-  return new SVGElement(el);
-};
-
-import { type RegisterCommentDto } from "@/types/Models/RegisterComment/RegisterCommentDto";
+  const el = document.createElementNS('http://www.w3.org/2000/svg', type)
+  return new SVGElement(el)
+}
 
 // 入力フォームの値を取得する
-const comment = ref("");
+const comment = ref('')
 
-const emits = defineEmits(["registerButtonClick"]);
+const emits = defineEmits(['registerButtonClick'])
 /**
  * 登録ボタンがクリックされたときの処理
  */
 const registerButtonClick = () => {
   const dto = {
-    comment: comment.value,
-  } as RegisterCommentDto;
-  emits("registerButtonClick", dto); // 投稿する
-  toggleModal(); // モーダルを閉じる
-};
+    comment: comment.value
+  } as RegisterCommentDto
+  emits('registerButtonClick', dto) // 投稿する
+  toggleModal() // モーダルを閉じる
+}
 
-const showModal = ref(false);
+const showModal = ref(false)
 
 // True/Falseを入れ替える
 const toggleModal = () => {
-  showModal.value = !showModal.value;
-};
+  showModal.value = !showModal.value
+}
 
 const props = defineProps({
   cameraAreaHeight: {
-    type: Number,
+    type: Number
   },
   cameraAreaWidth: {
-    type: Number,
-  },
-});
-const svg = ref<SVGElement>();
-const text = ref<HTMLElement>();
-const offscreenText = ref<HTMLElement>();
-const input = ref<HTMLInputElement>();
+    type: Number
+  }
+})
+const svg = ref<SVGElement>()
+const text = ref<HTMLElement>()
+const offscreenText = ref<HTMLElement>()
+const input = ref<HTMLInputElement>()
 const letters: {
-  onScreen: HTMLElement;
-  offScreen: HTMLElement;
-  char: string;
-  shift: boolean;
-}[] = [];
-const prompt = ["s", "t", "a", "r", "t", " ", "t", "y", "p", "i", "n", "g"];
-let runPrompt = true;
-let width = 0;
-let height = 0;
-let textSize = 0;
-let textCenter = 0;
+  onScreen: HTMLElement
+  offScreen: HTMLElement
+  char: string
+  shift: boolean
+}[] = []
+const prompt = ['s', 't', 'a', 'r', 't', ' ', 't', 'y', 'p', 'i', 'n', 'g']
+let runPrompt = true
+let width = 0
+let height = 0
+let textSize = 0
+let textCenter = 0
 
 const colors = [
-  { main: "#FBDB4A", shades: ["#FAE073", "#FCE790", "#FADD65", "#E4C650"] },
-  { main: "#F3934A", shades: ["#F7B989", "#F9CDAA", "#DD8644", "#F39C59"] },
-  { main: "#EB547D", shades: ["#EE7293", "#F191AB", "#D64D72", "#C04567"] },
-  { main: "#9F6AA7", shades: ["#B084B6", "#C19FC7", "#916198", "#82588A"] },
-  { main: "#5476B3", shades: ["#6382B9", "#829BC7", "#4D6CA3", "#3E5782"] },
-  { main: "#2BB19B", shades: ["#4DBFAD", "#73CDBF", "#27A18D", "#1F8171"] },
-  { main: "#70B984", shades: ["#7FBE90", "#98CBA6", "#68A87A", "#5E976E"] },
-];
+  { main: '#FBDB4A', shades: ['#FAE073', '#FCE790', '#FADD65', '#E4C650'] },
+  { main: '#F3934A', shades: ['#F7B989', '#F9CDAA', '#DD8644', '#F39C59'] },
+  { main: '#EB547D', shades: ['#EE7293', '#F191AB', '#D64D72', '#C04567'] },
+  { main: '#9F6AA7', shades: ['#B084B6', '#C19FC7', '#916198', '#82588A'] },
+  { main: '#5476B3', shades: ['#6382B9', '#829BC7', '#4D6CA3', '#3E5782'] },
+  { main: '#2BB19B', shades: ['#4DBFAD', '#73CDBF', '#27A18D', '#1F8171'] },
+  { main: '#70B984', shades: ['#7FBE90', '#98CBA6', '#68A87A', '#5E976E'] }
+]
 
 const resizePage = () => {
-  width = props.cameraAreaWidth;
-  height = props.cameraAreaHeight;
-  svg.value?.set("height", height.toString());
-  svg.value?.set("width", width.toString());
-  svg.value?.set("viewBox", `0 0 ${width} ${height}`);
-  resizeLetters();
-};
+  width = props.cameraAreaWidth
+  height = props.cameraAreaHeight
+  svg.value?.set('height', height.toString())
+  svg.value?.set('width', width.toString())
+  svg.value?.set('viewBox', `0 0 ${width} ${height}`)
+  resizeLetters()
+}
 
 const resizeLetters = () => {
-  textSize = props.cameraAreaWidth / (letters.length + 2);
-  if (textSize > 150) textSize = 150;
-  text.value!.style.fontSize = `${textSize}px`;
-  text.value!.style.height = `${textSize}px`;
-  text.value!.style.lineHeight = `${textSize}px`;
-  text.value!.style.width = `${props.cameraAreaWidth}px`;
-  offscreenText.value!.style.fontSize = `${textSize}px`;
-  const textRect = text.value!.getBoundingClientRect();
-  textCenter = textRect.top + textRect.height / 2;
-  positionLetters();
-};
+  textSize = props.cameraAreaWidth / (letters.length + 2)
+  if (textSize > 150) textSize = 150
+  text.value!.style.fontSize = `${textSize}px`
+  text.value!.style.height = `${textSize}px`
+  text.value!.style.lineHeight = `${textSize}px`
+  text.value!.style.width = `${props.cameraAreaWidth}px`
+  offscreenText.value!.style.fontSize = `${textSize}px`
+  const textRect = text.value!.getBoundingClientRect()
+  textCenter = textRect.top + textRect.height / 2
+  positionLetters()
+}
 
 const positionLetters = () => {
   letters.forEach((letter) => {
-    const timing = letter.shift ? 0.1 : 0;
+    const timing = letter.shift ? 0.1 : 0
     gsap.to(letter.onScreen, timing, {
-      x: letter.offScreen.offsetLeft + "px",
-      ease: Power3.easeInOut,
-    });
-    letter.shift = true;
-  });
-};
+      x: letter.offScreen.offsetLeft + 'px',
+      ease: Power3.easeInOut
+    })
+    letter.shift = true
+  })
+}
 
 const animateLetterIn = (letter: HTMLElement) => {
-  const yOffset = (0.5 + Math.random() * 0.5) * textSize;
-  gsap.fromTo(letter, 0.4, { scale: 0 }, { scale: 1, ease: Back.easeOut });
-  gsap.fromTo(
-    letter,
-    0.4,
-    { opacity: 0 },
-    { opacity: 1, ease: Power3.easeOut }
-  );
-  gsap.to(letter, 0.2, { y: -yOffset, ease: Power3.easeInOut });
-  gsap.to(letter, 0.2, { y: 0, ease: Power3.easeInOut, delay: 0.2 });
-  const rotation = -50 + Math.random() * 100;
-  gsap.to(letter, 0.2, { rotation: rotation, ease: Power3.easeInOut });
+  const yOffset = (0.5 + Math.random() * 0.5) * textSize
+  gsap.fromTo(letter, 0.4, { scale: 0 }, { scale: 1, ease: Back.easeOut })
+  gsap.fromTo(letter, 0.4, { opacity: 0 }, { opacity: 1, ease: Power3.easeOut })
+  gsap.to(letter, 0.2, { y: -yOffset, ease: Power3.easeInOut })
+  gsap.to(letter, 0.2, { y: 0, ease: Power3.easeInOut, delay: 0.2 })
+  const rotation = -50 + Math.random() * 100
+  gsap.to(letter, 0.2, { rotation: rotation, ease: Power3.easeInOut })
   gsap.to(letter, 0.2, {
     rotation: 0,
     ease: Power3.easeInOut,
-    delay: 0.2,
-  });
-};
+    delay: 0.2
+  })
+}
 
 const addDecor = (letter: HTMLElement, color: { shades: string[] }) => {
   setTimeout(() => {
-    const rect = letter.getBoundingClientRect();
-    const x0 = letter.offsetLeft + letter.offsetWidth / 2;
-    const y0 = textCenter - textSize * 0.5;
-    const shade = color.shades[Math.floor(Math.random() * 4)];
-    for (let i = 0; i < 8; i++) addTri(x0, y0, shade);
-    for (let i = 0; i < 8; i++) addCirc(x0, y0);
-  }, 150);
-};
+    const rect = letter.getBoundingClientRect()
+    const x0 = letter.offsetLeft + letter.offsetWidth / 2
+    const y0 = textCenter - textSize * 0.5
+    const shade = color.shades[Math.floor(Math.random() * 4)]
+    for (let i = 0; i < 8; i++) addTri(x0, y0, shade)
+    for (let i = 0; i < 8; i++) addCirc(x0, y0)
+  }, 150)
+}
 
 const addTri = (x0: number, y0: number, shade: string) => {
-  const tri = createSVG("polygon");
-  const a = Math.random();
-  const a2 = a + (-0.2 + Math.random() * 0.4);
-  const r = textSize * 0.52;
-  const r2 = r + textSize * Math.random() * 0.2;
-  const x = x0 + r * Math.cos(2 * Math.PI * a);
-  const y = y0 + r * Math.sin(2 * Math.PI * a);
-  const x2 = x0 + r2 * Math.cos(2 * Math.PI * a2);
-  const y2 = y0 + r2 * Math.sin(2 * Math.PI * a2);
-  const triSize = textSize * 0.1;
-  const scale = 0.3 + Math.random() * 0.7;
-  const offset = triSize * scale;
-  tri.set("points", `0,0 ${triSize * 2},0 ${triSize},${triSize * 2}`);
-  tri.style("fill", shade);
-  svg.value!.appendChild(tri.element);
+  const tri = createSVG('polygon')
+  const a = Math.random()
+  const a2 = a + (-0.2 + Math.random() * 0.4)
+  const r = textSize * 0.52
+  const r2 = r + textSize * Math.random() * 0.2
+  const x = x0 + r * Math.cos(2 * Math.PI * a)
+  const y = y0 + r * Math.sin(2 * Math.PI * a)
+  const x2 = x0 + r2 * Math.cos(2 * Math.PI * a2)
+  const y2 = y0 + r2 * Math.sin(2 * Math.PI * a2)
+  const triSize = textSize * 0.1
+  const scale = 0.3 + Math.random() * 0.7
+  const offset = triSize * scale
+  tri.set('points', `0,0 ${triSize * 2},0 ${triSize},${triSize * 2}`)
+  tri.style('fill', shade)
+  svg.value!.appendChild(tri.element)
   gsap.fromTo(
     tri.element,
     0.6,
@@ -244,7 +237,7 @@ const addTri = (x0: number, y0: number, shade: string) => {
       scale: scale,
       x: x - offset,
       y: y - offset,
-      opacity: 1,
+      opacity: 1
     },
     {
       x: x2 - offset,
@@ -252,25 +245,25 @@ const addTri = (x0: number, y0: number, shade: string) => {
       opacity: 0,
       ease: Power1.easeInOut,
       onComplete: () => {
-        svg.value!.removeChild(tri.element);
-      },
+        svg.value!.removeChild(tri.element)
+      }
     }
-  );
-};
+  )
+}
 
 const addCirc = (x0: number, y0: number) => {
-  const circ = createSVG("circle");
-  const a = Math.random();
-  const r = textSize * 0.52;
-  const r2 = r + textSize;
-  const x = x0 + r * Math.cos(2 * Math.PI * a);
-  const y = y0 + r * Math.sin(2 * Math.PI * a);
-  const x2 = x0 + r2 * Math.cos(2 * Math.PI * a);
-  const y2 = y0 + r2 * Math.sin(2 * Math.PI * a);
-  const circSize = textSize * 0.05 * Math.random();
-  circ.set("r", circSize);
-  circ.style("fill", "#eee");
-  svg.value!.appendChild(circ.element);
+  const circ = createSVG('circle')
+  const a = Math.random()
+  const r = textSize * 0.52
+  const r2 = r + textSize
+  const x = x0 + r * Math.cos(2 * Math.PI * a)
+  const y = y0 + r * Math.sin(2 * Math.PI * a)
+  const x2 = x0 + r2 * Math.cos(2 * Math.PI * a)
+  const y2 = y0 + r2 * Math.sin(2 * Math.PI * a)
+  const circSize = textSize * 0.05 * Math.random()
+  circ.set('r', circSize)
+  circ.style('fill', '#eee')
+  svg.value!.appendChild(circ.element)
   gsap.fromTo(
     circ.element,
     0.6,
@@ -281,50 +274,50 @@ const addCirc = (x0: number, y0: number) => {
       opacity: 0,
       ease: Power1.easeInOut,
       onComplete: () => {
-        svg.value!.removeChild(circ.element);
-      },
+        svg.value!.removeChild(circ.element)
+      }
     }
-  );
-};
+  )
+}
 
 const addLetter = (char: string, i: number) => {
-  const letter = document.createElement("span");
-  const oLetter = document.createElement("span");
-  letter.innerHTML = char;
-  oLetter.innerHTML = char;
-  text.value!.appendChild(letter);
-  const color = colors[i % colors.length];
-  letter.style.color = color.main;
-  offscreenText.value!.appendChild(oLetter);
+  const letter = document.createElement('span')
+  const oLetter = document.createElement('span')
+  letter.innerHTML = char
+  oLetter.innerHTML = char
+  text.value!.appendChild(letter)
+  const color = colors[i % colors.length]
+  letter.style.color = color.main
+  offscreenText.value!.appendChild(oLetter)
   letters[i] = {
     offScreen: oLetter,
     onScreen: letter,
     char: char,
-    shift: false,
-  };
-  animateLetterIn(letter);
-  addDecor(oLetter, color);
-};
+    shift: false
+  }
+  animateLetterIn(letter)
+  addDecor(oLetter, color)
+}
 
 const addLetters = (value: string[]) => {
   value.forEach((char, i) => {
     if (letters[i] && letters[i].char !== char) {
-      letters[i].onScreen.innerHTML = char;
-      letters[i].offScreen.innerHTML = char;
-      letters[i].char = char;
+      letters[i].onScreen.innerHTML = char
+      letters[i].offScreen.innerHTML = char
+      letters[i].char = char
     }
     if (letters[i] === undefined) {
-      addLetter(char, i);
+      addLetter(char, i)
     }
-  });
-};
+  })
+}
 
 const animateLetterOut = (
   letter: {
-    onScreen: HTMLElement;
-    offScreen: HTMLElement;
-    char: string;
-    shift: boolean;
+    onScreen: HTMLElement
+    offScreen: HTMLElement
+    char: string
+    shift: boolean
   },
   i: number
 ) => {
@@ -333,71 +326,71 @@ const animateLetterOut = (
     opacity: 0,
     ease: Power2.easeIn,
     onComplete: () => {
-      offscreenText.value!.removeChild(letter.offScreen);
-      text.value!.removeChild(letter.onScreen);
-      positionLetters();
-    },
-  });
-  letters.splice(i, 1);
-};
+      offscreenText.value!.removeChild(letter.offScreen)
+      text.value!.removeChild(letter.onScreen)
+      positionLetters()
+    }
+  })
+  letters.splice(i, 1)
+}
 
 const removeLetters = (value: string[]) => {
   for (let i = letters.length - 1; i >= 0; i--) {
-    const letter = letters[i];
+    const letter = letters[i]
     if (value[i] === undefined) {
-      animateLetterOut(letter, i);
+      animateLetterOut(letter, i)
     }
   }
-};
+}
 
 const onInputChange = () => {
   const value =
-    comment.value === "" ? [] : comment.value.toLowerCase().split("");
-  addLetters(value);
-  removeLetters(value);
-  resizeLetters();
-};
+    comment.value === '' ? [] : comment.value.toLowerCase().split('')
+  addLetters(value)
+  removeLetters(value)
+  resizeLetters()
+}
 
 const keyup = (e: KeyboardEvent) => {
   if (runPrompt) {
-    comment.value = "";
-    runPrompt = false;
+    comment.value = ''
+    runPrompt = false
   }
-  onInputChange();
-};
+  onInputChange()
+}
 
 const addPrompt = (i: number) => {
   setTimeout(() => {
     if (runPrompt && prompt[i]) {
-      comment.value = comment.value + prompt[i];
-      onInputChange();
-      addPrompt(i + 1);
+      comment.value = comment.value + prompt[i]
+      onInputChange()
+      addPrompt(i + 1)
     }
-  }, 300);
-};
+  }, 300)
+}
 
 onMounted(() => {
-  svg.value = selectSVG("svg");
-  text.value = document.getElementById("text")!;
-  offscreenText.value = document.getElementById("offscreen-text")!;
-  input.value = document.getElementById("input") as HTMLInputElement;
-  resizePage();
-  window.addEventListener("resize", resizePage);
-  input.value.addEventListener("keyup", keyup);
-  input.value.focus();
-  addPrompt(0);
-});
+  svg.value = selectSVG('svg')
+  text.value = document.getElementById('text')!
+  offscreenText.value = document.getElementById('offscreen-text')!
+  input.value = document.getElementById('input') as HTMLInputElement
+  resizePage()
+  window.addEventListener('resize', resizePage)
+  input.value.addEventListener('keyup', keyup)
+  input.value.focus()
+  addPrompt(0)
+})
 
 onUnmounted(() => {
-  window.removeEventListener("resize", resizePage);
-});
+  window.removeEventListener('resize', resizePage)
+})
 </script>
 
 <style>
-@import url("https://fonts.googleapis.com/css2?family=Rubik+Mono+One&display=swap");
+@import url('https://fonts.googleapis.com/css2?family=Rubik+Mono+One&display=swap');
 
 p span {
-  font-family: "Rubik Mono One", "Noto Sans JP", sans-serif;
+  font-family: 'Rubik Mono One', 'Noto Sans JP', sans-serif;
 }
 
 #svg {

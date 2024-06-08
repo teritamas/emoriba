@@ -7,15 +7,12 @@
       class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 mr-2 mb-2 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800"
       @click="toggleModal"
     >
-      {{ showModal ? "モーダルを閉じる" : "モーダルを開く" }}
+      {{ showModal ? 'モーダルを閉じる' : 'モーダルを開く' }}
     </button>
   </div>
 
   <!-- Main modal -->
-  <div
-    v-if="showModal"
-    class="fixed top-4 left-0 right-0 z-50"
-  >
+  <div v-if="showModal" class="fixed top-4 left-0 right-0 z-50">
     <div
       class="relative border bg-white rounded-lg border-gray-700 w-11/12 md:w-9/12 lg:7/12 m-auto"
     >
@@ -58,13 +55,14 @@
             <label
               for="large-input"
               class="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
-            >今の"気持ち"を入力してね！</label>
+              >今の"気持ち"を入力してね！</label
+            >
             <input
               id="large-input"
               v-model="comment"
               type="text"
               class="block w-full p-4 text-gray-900 border border-gray-300 rounded-lg bg-gray-50 text-base focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-            >
+            />
           </div>
 
           <div>
@@ -98,11 +96,7 @@
                     みんなに共有したい写真をアップロードしてね！(任意)
                   </p>
                 </div>
-                <input
-                  id="dropzone-file"
-                  type="file"
-                  class="hidden"
-                >
+                <input id="dropzone-file" type="file" class="hidden" />
               </label>
             </div>
           </div>
@@ -132,29 +126,29 @@
 </template>
 
 <script setup lang="ts">
-  import { type RegisterCommentDto } from "@/types/Models/RegisterComment/RegisterCommentDto";
+import type RegisterCommentDto from '@/types/Models/RegisterComment/RegisterCommentDto'
 
-  // 入力フォームの値を取得する
-  const comment = ref("");
+// 入力フォームの値を取得する
+const comment = ref('')
 
-  const emits = defineEmits(["registerButtonClick"]);
-  /**
-   * 登録ボタンがクリックされたときの処理
-   */
-  const registerButtonClick = () => {
-    const dto = {
-      comment: comment.value,
-    } as RegisterCommentDto;
-    emits("registerButtonClick", dto); // 投稿する
-    toggleModal(); // モーダルを閉じる
-  };
+const emits = defineEmits(['registerButtonClick'])
+/**
+ * 登録ボタンがクリックされたときの処理
+ */
+const registerButtonClick = () => {
+  const dto = {
+    comment: comment.value
+  } as RegisterCommentDto
+  emits('registerButtonClick', dto) // 投稿する
+  toggleModal() // モーダルを閉じる
+}
 
-  const showModal = ref(false);
+const showModal = ref(false)
 
-  // True/Falseを入れ替える
-  const toggleModal = () => {
-    showModal.value = !showModal.value;
-  };
+// True/Falseを入れ替える
+const toggleModal = () => {
+  showModal.value = !showModal.value
+}
 </script>
 
 <style></style>

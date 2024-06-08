@@ -1,16 +1,16 @@
 /** @type {import('tailwindcss').Config} */
 module.exports = {
   content: [
-    "./app.vue",
-    "./components/**/*.{js,vue,ts}",
-    "./layouts/**/*.vue",
-    "./pages/**/*.vue",
-    "./plugins/**/*.{js,ts}",
-    "./nuxt.config.{js,ts}",
-    "./node_modules/flowbite/**/*.{js,ts}",
+    './app.vue',
+    './components/**/*.{js,vue,ts}',
+    './layouts/**/*.vue',
+    './pages/**/*.vue',
+    './plugins/**/*.{js,ts}',
+    './nuxt.config.{js,ts}',
+    './node_modules/flowbite/**/*.{js,ts}'
   ],
   theme: {
-    extend: {},
+    extend: {}
   },
-  plugins: [require("flowbite/plugin")],
-};
+  plugins: [require('flowbite/plugin')]
+}

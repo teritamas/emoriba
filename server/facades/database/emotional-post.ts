@@ -1,8 +1,8 @@
-import { GeoPoint } from "firebase-admin/firestore";
-import { geoFirestore } from "../firebase";
-import * as geofire from "geofire-common";
+import { GeoPoint } from 'firebase-admin/firestore'
+import * as geofire from 'geofire-common'
+import { geoFirestore } from '../firebase'
 
-const firestoreClient = geoFirestore;
+const firestoreClient = geoFirestore
 
 /**
  *
@@ -10,29 +10,29 @@ const firestoreClient = geoFirestore;
  */
 export const fetchPost = async (lat: number, lng: number) => {
   try {
-    const latitude = Number(lat);
-    const longitude = Number(lng);
-    console.log("latitude: ", latitude, "longitude: ", longitude);
+    const latitude = Number(lat)
+    const longitude = Number(lng)
+    console.log('latitude: ', latitude, 'longitude: ', longitude)
     const posts = await firestoreClient
-      .collection("posts")
+      .collection('posts')
       .near({
         center: new GeoPoint(latitude, longitude),
-        radius: 100, // 1km以内
+        radius: 100 // 1km以内
       })
-      .get();
-    console.log(posts.docs.map((doc) => doc.data()));
-    return posts.docs.map((doc) => doc.data());
+      .get()
+    console.log(posts.docs.map((doc) => doc.data()))
+    return posts.docs.map((doc) => doc.data())
   } catch (error) {
     console.error(
-      "一覧取得でエラーが発生しました. longitude: ",
+      '一覧取得でエラーが発生しました. longitude: ',
       lng,
-      "latitude: ",
+      'latitude: ',
       lat,
-      "error: ",
+      'error: ',
       error
-    );
+    )
   }
-};
+}
 
 /**
  * 投稿を登録する
@@ -44,7 +44,7 @@ export const registerPost = async (
   imageUrl: string | null = null
 ) => {
   try {
-    const coordinates = new GeoPoint(Number(latitude), Number(longitude));
+    const coordinates = new GeoPoint(Number(latitude), Number(longitude))
     const post = {
       comment,
       imageUrl,
@@ -54,15 +54,15 @@ export const registerPost = async (
       g: {
         geohash: geofire.geohashForLocation([
           Number(latitude),
-          Number(longitude),
+          Number(longitude)
         ]),
-        geopoint: coordinates,
+        geopoint: coordinates
       },
-      createdAt: new Date().toISOString(),
-    };
-    await firestoreClient.collection("posts").add(post);
-    return post;
+      createdAt: new Date().toISOString()
+    }
+    await firestoreClient.collection('posts').add(post)
+    return post
   } catch (error) {
-    console.error("登録でエラーが発生しました. error: ", error);
+    console.error('登録でエラーが発生しました. error: ', error)
   }
-};
+}
