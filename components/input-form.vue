@@ -3,7 +3,9 @@
     <svg ref="svg" />
     <p id="text" ref="text" class="text" />
     <p id="offscreen-text" ref="offscreenText" class="offscreen-text" />
-    <span class="font-bold">今の気持ちをシェアしよう！</span>
+    <span class="bg-yellow-200 font-bold bg-opacity-30"
+      >いまの気持ちをシェアしよう！</span
+    >
     <div class="flex">
       <label
         for="dropzone-file"
@@ -133,7 +135,14 @@ const letters: {
   char: string
   shift: boolean
 }[] = []
-const prompt = ['s', 't', 'a', 'r', 't', ' ', 't', 'y', 'p', 'i', 'n', 'g']
+// デフォルト表示用の5つの単語を格納した配列
+const phrases = [
+  'げきあつ！',
+  'さいこう！',
+  'どきどき！',
+  'わくわく！',
+  'ありがとう！'
+]
 let runPrompt = true
 let width = 0
 let height = 0
@@ -153,9 +162,9 @@ const colors = [
 const resizePage = () => {
   width = props.cameraAreaWidth
   height = props.cameraAreaHeight
-  svg.value?.set('height', height.toString())
-  svg.value?.set('width', width.toString())
-  svg.value?.set('viewBox', `0 0 ${width} ${height}`)
+  //  svg.value?.set('height', height.toString())
+  //  svg.value?.set('width', width.toString())
+  //  svg.value?.set('viewBox', `0 0 ${width} ${height}`)
   resizeLetters()
 }
 
@@ -204,8 +213,8 @@ const addDecor = (letter: HTMLElement, color: { shades: string[] }) => {
     const x0 = letter.offsetLeft + letter.offsetWidth / 2
     const y0 = textCenter - textSize * 0.5
     const shade = color.shades[Math.floor(Math.random() * 4)]
-    for (let i = 0; i < 8; i++) addTri(x0, y0, shade)
-    for (let i = 0; i < 8; i++) addCirc(x0, y0)
+    //for (let i = 0; i < 8; i++) addTri(x0, y0, shade)
+    //for (let i = 0; i < 8; i++) addCirc(x0, y0)
   }, 150)
 }
 
@@ -281,6 +290,7 @@ const addLetter = (char: string, i: number) => {
   const oLetter = document.createElement('span')
   letter.innerHTML = char
   oLetter.innerHTML = char
+  if (!letter) return
   text.value!.appendChild(letter)
   const color = colors[i % colors.length]
   letter.style.color = color.main
@@ -355,7 +365,17 @@ const keyup = (e: KeyboardEvent) => {
   onInputChange()
 }
 
-const addPrompt = (i: number) => {
+// ランダムに単語を選択する関数
+const getRandomPhrase = () => {
+  const randomIndex = Math.floor(Math.random() * phrases.length)
+  return phrases[randomIndex]
+}
+
+// ランダムに選択された単語をpromptとして設定
+const prompt = getRandomPhrase().split('')
+
+// 一文字ずつ出力する関数
+const addPrompt = (i) => {
   setTimeout(() => {
     if (runPrompt && prompt[i]) {
       comment.value = comment.value + prompt[i]
@@ -384,9 +404,10 @@ onUnmounted(() => {
 
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Rubik+Mono+One&display=swap');
-
+@import url('https://fonts.googleapis.com/css2?family=Murecho:wght@100..900&display=swap');
 p span {
-  font-family: 'Rubik Mono One', 'Noto Sans JP', sans-serif;
+  font-weight: bold;
+  font-family: 'Rubik Mono One', 'Murecho', 'Noto Sans JP', sans-serif;
 }
 
 #svg {

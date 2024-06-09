@@ -158,36 +158,20 @@ const toggleSidebar = (): void => {
  *
  * カメラエリアの高さと幅を取得する
  */
-// 要素の参照を作成
-const cameraElement = ref<HTMLElement | null>(null)
 // カメラエリアの高さと幅の状態を作成
 const cameraAreaHeight = ref<number>(0)
-const cameraAreaWidth = ref<number>(0)
+const cameraAreaWidth = ref<number>(360)
 // 要素の高さと幅を更新する関数
 const updateDimensions = (): void => {
-  if (cameraElement.value) {
-    cameraAreaHeight.value = cameraElement.value.offsetHeight
-    cameraAreaWidth.value = cameraElement.value.offsetWidth
+  if (window.innerWidth) {
+    cameraAreaHeight.value = window.innerHeight
+    cameraAreaWidth.value = window.innerWidth
   }
 }
-// ResizeObserverのインスタンスを作成
-let resizeObserver: ResizeObserver | null = null
-onMounted(() => {
-  // ResizeObserverのコールバックを設定
-  resizeObserver = new ResizeObserver(updateDimensions)
-  // 監視する要素を指定
-  if (cameraElement.value) {
-    resizeObserver.observe(cameraElement.value)
-  }
 
+onMounted(() => {
   // 初回ロード時にサイズを取得
   updateDimensions()
-})
-onUnmounted(() => {
-  // コンポーネントがアンマウントされたときに監視を解除
-  if (resizeObserver && cameraElement.value) {
-    resizeObserver.unobserve(cameraElement.value)
-  }
 })
 
 /**
