@@ -3,34 +3,17 @@
     <svg ref="svg" />
     <p id="text" ref="text" class="text" />
     <p id="offscreen-text" ref="offscreenText" class="offscreen-text" />
-    <span class="bg-yellow-200 font-bold bg-opacity-30"
-      >いまの気持ちをシェアしよう！</span
-    >
+    <p class="bg-yellow-200 font-bold bg-opacity-30 inline p-0.5">
+      いまの気持ちをシェアしよう！
+      <span class="count">{{ characterCount }} / {{ maxLength }}文字</span>
+    </p>
     <div class="flex">
       <label
         for="dropzone-file"
         class="flex flex-col items-center justify-center px-2 w-10 h-10 border-2 border-gray-300 border-dashed rounded-lg cursor-pointer bg-gray-50"
       >
         <div class="flex flex-col items-center justify-center pt-5 pb-6">
-          <svg
-            viewBox="0 0 512 512"
-            style="width: 24px; height: 24px; opacity: 1"
-          >
-            <g>
-              <path
-                d="M256,224.828c-34.344,0-62.156,28.078-62.156,62.719s27.813,62.719,62.156,62.719s62.156-28.078,62.156-62.719
-		S290.344,224.828,256,224.828z"
-              />
-              <path
-                d="M478.766,135.75h-58.625c-13.078,0-24.938-7.75-30.297-19.781l-17.547-39.313
-		c-5.359-12.016-17.234-19.766-30.313-19.766H170.016c-13.078,0-24.953,7.75-30.328,19.766l-17.531,39.313
-		C116.797,128,104.938,135.75,91.859,135.75H33.234C14.875,135.75,0,150.766,0,169.266v252.328c0,18.5,14.875,33.516,33.234,33.516
-		h244.25h201.281c18.344,0,33.234-15.016,33.234-33.516V169.266C512,150.766,497.109,135.75,478.766,135.75z M256,403.844
-		c-63.688,0-115.297-52.063-115.297-116.297S192.313,171.234,256,171.234s115.297,52.078,115.297,116.313
-		S319.688,403.844,256,403.844z"
-              />
-            </g>
-          </svg>
+          <icon-camera />
         </div>
         <input id="dropzone-file" type="file" class="hidden" />
       </label>
@@ -41,7 +24,7 @@
         class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full ps-5 p-2.5"
         type="text"
         autofocus
-        maxlength="30"
+        :maxlength="maxLength"
         @keyup="onInputChange"
       />
       <button
@@ -49,21 +32,7 @@
         class="w-15 h-15 text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 rounded-lg text-sm px-2 py-2 text-center"
         @click="registerButtonClick"
       >
-        <svg
-          viewBox="0 0 512 512"
-          style="width: 24px; height: 24px; opacity: 1"
-        >
-          <g>
-            <polygon
-              style="fill: white"
-              points="121.71,463.73 211.257,394.524 121.71,333.638 	"
-            />
-            <polygon
-              style="fill: white"
-              points="0,216.127 122.938,305.26 465.837,86.043 152.628,326.791 335.73,459.532 512,48.27 	"
-            />
-          </g>
-        </svg>
+        <icon-send />
       </button>
     </div>
   </div>
@@ -81,6 +50,10 @@ const props = defineProps({
     type: Number
   }
 })
+
+// 入力フォームの字数制限
+const maxLength = ref('30')
+const characterCount = computed(() => comment.value.length)
 
 // 入力フォームの値を取得する
 const comment = ref('')
@@ -408,6 +381,10 @@ onUnmounted(() => {
 p span {
   font-weight: bold;
   font-family: 'Rubik Mono One', 'Murecho', 'Noto Sans JP', sans-serif;
+}
+
+.count {
+  font-family: 'Murecho', 'Noto Sans JP', sans-serif;
 }
 
 #svg {
