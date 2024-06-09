@@ -5,5 +5,5 @@
   "editor.insertSpaces": true,
   // ファイル保存時に自動フォーマットを実行
   "editor.formatOnSave": true,
-  "cSpell.words": ["selectbox"]
+  "cSpell.words": ["geohash", "geopoint", "selectbox"]
 }
