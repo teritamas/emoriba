@@ -1,55 +1,57 @@
 <template>
-  <button
-    v-if="isSidebarOpen"
-    type="button"
-    class="inline-flex items-center p-2 mt-2 ms-3 text-sm text-gray-500 rounded-lg hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-gray-200"
-    @click="toggleSidebar"
-  >
-    <span class="sr-only">Open sidebar</span>
-    <svg
-      class="w-6 h-6"
-      aria-hidden="true"
-      fill="currentColor"
-      viewBox="0 0 20 20"
-      xmlns="http://www.w3.org/2000/svg"
+  <div class="h-full m-0 overflow-hidden">
+    <button
+      v-if="isSidebarOpen"
+      type="button"
+      class="inline-flex items-center p-2 mt-2 ms-3 text-sm text-gray-500 rounded-lg hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-gray-200"
+      @click="toggleSidebar"
     >
-      <path
-        clip-rule="evenodd"
-        fill-rule="evenodd"
-        d="M2 4.75A.75.75 0 012.75 4h14.5a.75.75 0 010 1.5H2.75A.75.75 0 012 4.75zm0 10.5a.75.75 0 01.75-.75h7.5a.75.75 0 010 1.5h-7.5a.75.75 0 01-.75-.75zM2 10a.75.75 0 01.75-.75h14.5a.75.75 0 010 1.5H2.75A.75.75 0 012 10z"
-      />
-    </svg>
-  </button>
-  <!--<sidebar-view v-if="!isSidebarOpen" @toggleSidebar="toggleSidebar" />-->
+      <span class="sr-only">Open sidebar</span>
+      <svg
+        class="w-6 h-6"
+        aria-hidden="true"
+        fill="currentColor"
+        viewBox="0 0 20 20"
+        xmlns="http://www.w3.org/2000/svg"
+      >
+        <path
+          clip-rule="evenodd"
+          fill-rule="evenodd"
+          d="M2 4.75A.75.75 0 012.75 4h14.5a.75.75 0 010 1.5H2.75A.75.75 0 012 4.75zm0 10.5a.75.75 0 01.75-.75h7.5a.75.75 0 010 1.5h-7.5a.75.75 0 01-.75-.75zM2 10a.75.75 0 01.75-.75h14.5a.75.75 0 010 1.5H2.75A.75.75 0 012 10z"
+        />
+      </svg>
+    </button>
+    <!--<sidebar-view v-if="!isSidebarOpen" @toggleSidebar="toggleSidebar" />-->
 
-  <!-- AR.jsの仕様でBody直下である必要がある -->
-  <ar-frame
-    :posts="posts"
-    :device-latitude="latitude"
-    :device-longitude="longitude"
-  />
-  <div>
-    <animated-cube />
-  </div>
-  <div class="absolute top-4 right-4 bg-white text-xs p-2 rounded-lg">
-    <p>longitude: {{ longitude }}</p>
-    <p>latitude: {{ latitude }}</p>
-  </div>
+    <!-- AR.jsの仕様でBody直下である必要がある -->
+    <ar-frame
+      :posts="posts"
+      :device-latitude="latitude"
+      :device-longitude="longitude"
+    />
+    <div>
+      <animated-cube />
+    </div>
+    <div class="absolute top-4 right-4 bg-white text-xs p-2 rounded-lg">
+      <p>longitude: {{ longitude }}</p>
+      <p>latitude: {{ latitude }}</p>
+    </div>
 
-  <selectbox
-    class="absolute top-4 left-4 bg-white text-xs p-2 rounded-lg"
-    :items="items"
-    :model-value="selectedValue"
-  />
+    <selectbox
+      class="absolute top-4 left-4 bg-white text-xs p-2 rounded-lg"
+      :items="items"
+      :model-value="selectedValue"
+    />
 
-  <div ref="cameraElement">
-    <footer class="fixed bottom-0 left-0 z-20 p-4 w-full">
-      <input-form
-        :camera-area-width="cameraAreaWidth"
-        :camera-area-height="cameraAreaHeight"
-        @register-button-click="postComment"
-      />
-    </footer>
+    <div ref="cameraElement">
+      <footer class="fixed bottom-0 left-0 z-20 p-4 w-full">
+        <input-form
+          :camera-area-width="cameraAreaWidth"
+          :camera-area-height="cameraAreaHeight"
+          @register-button-click="postComment"
+        />
+      </footer>
+    </div>
   </div>
 </template>
 
@@ -251,3 +253,11 @@ const items = ref<DomeCityEvent[]>([
 // FIXME: SelectedBoxの挙動がよくわからないので、とりあえず初期値を設定
 selectedValue.value = items.value[0].events[0]
 </script>
+
+<style>
+.main {
+  height: 100%;
+  margin: 0px;
+  overflow: hidden;
+}
+</style>

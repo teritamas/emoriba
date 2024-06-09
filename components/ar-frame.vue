@@ -1,7 +1,8 @@
 <template>
   <a-scene
     vr-mode-ui="enabled: false"
-    embedded
+    loading-screen="enabled: false;"
+    renderer="logarithmicDepthBuffer: true;"
     arjs="sourceType: webcam; debugUIEnabled: false;"
   >
     <a-text
