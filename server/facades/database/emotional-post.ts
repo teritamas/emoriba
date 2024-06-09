@@ -29,8 +29,9 @@ export const fetchPost = async (
       .where('eventName', '==', eventName)
       .near({
         center: new GeoPoint(latitude, longitude),
-        radius: 100 // 1km以内
+        radius: 1 // 1km以内
       })
+      .limit(10) // 10件のみ取得
       .get()
     console.log(posts.docs.map((doc) => doc.data()))
     return posts.docs.map((doc) => doc.data())
