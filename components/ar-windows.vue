@@ -4,7 +4,7 @@
     class="min-h-full min-w-full overflow-y-hidden"
     autoplay
     playsinline
-  ></video>
+  />
 </template>
 
 <script setup lang="ts">
@@ -12,7 +12,7 @@
 const video = ref<HTMLVideoElement | null>(null)
 onMounted(() => {
   navigator.mediaDevices
-    .getUserMedia({ video: true })
+    .getUserMedia({ video: { facingMode: 'environment' } })
     .then((stream) => {
       if (video.value) {
         video.value.srcObject = stream
