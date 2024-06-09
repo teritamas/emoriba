@@ -1,9 +1,7 @@
 <template>
-  <div class="main">
-    <NuxtLayout>
-      <NuxtPage />
-    </NuxtLayout>
-  </div>
+  <NuxtLayout>
+    <NuxtPage />
+  </NuxtLayout>
 </template>
 
 <style>
@@ -11,9 +9,12 @@ body,
 #__nuxt,
 #__layout,
 .main {
-  height: 100%;
-  margin: 0px;
+  width: 100%;
+  margin: 0px important!;
   overflow: hidden;
+}
+
+#arjs-video {
 }
 
 /*イベントピッカーの位置の調整*/
