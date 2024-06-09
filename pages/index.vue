@@ -21,23 +21,27 @@
         />
       </svg>
     </button>
-    <!--<sidebar-view v-if="!isSidebarOpen" @toggleSidebar="toggleSidebar" />-->
-
-    <!--<application-title class="absolute top-4 left-4" />-->
     <div>
       <ar-windows />
-      <animated-cube />
-    </div>
-    <div class="absolute top-4 right-4 bg-white text-xs p-2 rounded-lg">
-      <p>longitude: {{ longitude }}</p>
-      <p>latitude: {{ latitude }}</p>
     </div>
 
-    <selectbox
-      class="absolute top-4 left-4 bg-white text-xs p-2 rounded-lg"
-      :items="items"
-      :model-value="selectedValue"
-    />
+    <div class="absolute top-4 left-4 bg-white text-xs p-2 rounded-lg">
+      <button type="button" v-if="!showPicker" @click="showPicker = true">
+        <icon-calendar />
+        {{ selectedEvent }}
+      </button>
+
+      <van-picker
+        v-if="showPicker"
+        title="イベント"
+        confirm-button-text="選択"
+        cancel-button-text="✕"
+        :columns="columns"
+        @confirm="onConfirm"
+        @cancel="onCancel"
+        @change="onChange"
+      />
+    </div>
 
     <div ref="cameraElement">
       <footer class="fixed bottom-0 left-0 z-20 p-4 w-full">
@@ -57,7 +61,6 @@ import type RegisterCommentDto from '@/types/Models/RegisterComment/RegisterComm
 import type RegisterCommentRequest from '@/types/Models/RegisterComment/RegisterCommentRequest'
 const longitude = ref(-1)
 const latitude = ref(-1)
-const selectedValue = ref<string>('all')
 
 /**
  * 端末の情報を利用して位置情報を取得する
@@ -90,7 +93,7 @@ const fetchEmotionalPosts = async () => {
   // 位置情報はクエリパラメータとして送信する
   try {
     const res = await fetch(
-      `api/emotional-post?longitude=${longitude.value}&latitude=${latitude.value}&eventName=${selectedValue.value}`,
+      `api/emotional-post?longitude=${longitude.value}&latitude=${latitude.value}&eventName=${selectedEvent.value}`,
       {
         method: 'get',
         headers: {
@@ -119,7 +122,7 @@ const postComment = async (dto: RegisterCommentDto) => {
           latitude: latitude.value
         },
         comment: dto.comment,
-        eventName: selectedValue.value!
+        eventName: selectedEvent.value!
       } as RegisterCommentRequest)
     )
     const res = await fetch('api/emotional-post', {
@@ -180,65 +183,34 @@ onUnmounted(() => {
 /**
  * ドームシティのイベント一覧, 本来はAPIから取得するが現時点ではダミーを使用
  */
-const items = ref<DomeCityEvent[]>([
+import { showToast } from 'vant'
+const showPicker = ref(false)
+const selectedEvent = ref('リアルタイム')
+const columns = [
+  { text: 'リアルタイム', value: 'リアルタイム' },
   {
-    createdAt: '2024-06-09',
-    commentCounts: 32,
-    events: ['巨人－オリックス']
+    text: '第73回全日本大学野球選手権大会',
+    value: '第73回全日本大学野球選手権大会'
   },
   {
-    createdAt: '2024-06-10',
-    commentCounts: 78,
-    events: ['第73回全日本大学野球選手権大会']
+    text: 'オードリーのオールナイトニッポン in 東京ドーム',
+    value: 'オードリーのオールナイトニッポン in 東京ドーム'
   },
   {
-    createdAt: '2024-06-11',
-    commentCounts: 12,
-    events: ['第73回全日本大学野球選手権大会', 'DREAM STAR FIGHTING MARIGOLD']
-  },
-  {
-    createdAt: '2024-06-12',
-    commentCounts: 93,
-    events: ['第73回全日本大学野球選手権大会', 'Fortune Dream 9']
-  },
-  {
-    createdAt: '2024-06-13',
-    commentCounts: 45,
-    events: [
-      'NANIMONO 2nd ANNIVERSARY ONEMAN 『インキャが世界を救う★ 〜なにものといっしょ〜』'
-    ]
-  },
-  {
-    createdAt: '2024-06-14',
-    commentCounts: 67,
-    events: ['TOSHIKI KADOMATSU Performance 2024 "C.U.M" vol. 1']
-  },
-  {
-    createdAt: '2024-06-15',
-    commentCounts: 19,
-    events: [
-      'TOSHIKI KADOMATSU Performance 2024 "C.U.M" vol. 1',
-      'プロボクシング（DANGANジム）',
-      '櫻坂46 4th ARENA TOUR 2024新・櫻前線 -Go on back?- IN 東京ドーム'
-    ]
-  },
-  {
-    createdAt: '2024-06-16',
-    commentCounts: 81,
-    events: [
-      '櫻坂46 4th ARENA TOUR 2024新・櫻前線 -Go on back?- IN 東京ドーム',
-      'i☆Ris 9th Live Tour 2024 愛たくて...Full Energy!!',
-      '大日本プロレス',
-      'ミキハウスランド'
-    ]
-  },
-  {
-    createdAt: '2024-06-17',
-    commentCounts: 62,
-    events: ['プロボクシング（三迫ジム）']
+    text: 'ARASHI Anniversary Tour 5×20',
+    value: 'ARASHI Anniversary Tour 5×20'
   }
-])
-
-// FIXME: SelectedBoxの挙動がよくわからないので、とりあえず初期値を設定
-selectedValue.value = items.value[0].events[0]
+]
+const onConfirm = ({ selectedValues }) => {
+  selectedEvent.value = selectedValues[0]
+  showPicker.value = false
+  showToast(`イベント: ${selectedValues.join(',')}`)
+}
+const onChange = ({ selectedValues }) => {
+  selectedEvent.value = selectedValues[0]
+  showToast(`イベント: ${selectedValues.join(',')}`)
+}
+const onCancel = () => {
+  showPicker.value = false
+}
 </script>

@@ -30,6 +30,9 @@ export default defineNuxtConfig({
           src: 'https://unpkg.com/aframe-look-at-component@0.8.0/dist/aframe-look-at-component.min.js'
         }
       ]
+    },
+    experimental: {
+      externalVue: true
     }
   }
 })
