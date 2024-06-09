@@ -28,7 +28,7 @@
   </button>
 
   <div class="absolute top-4 left-4 bg-white text-xs p-2 rounded-lg">
-    <button type="button" v-if="!showPicker" @click="showPicker = true">
+    <button v-if="!showPicker" type="button" @click="showPicker = true">
       <icon-calendar />
       {{ selectedEvent }}
     </button>
@@ -57,23 +57,22 @@
 </template>
 
 <script setup lang="ts">
-import type DomeCityEvent from '@/types/Domain/DomeCityEvent'
 import { showToast } from 'vant'
 import type RegisterCommentDto from '@/types/Models/RegisterComment/RegisterCommentDto'
 import type RegisterCommentRequest from '@/types/Models/RegisterComment/RegisterCommentRequest'
 import type { EmotionalPost } from '@/types/Domain/EmotionalPost'
+import type FetchPostResponse from '~/types/Models/FetchPosts/FetchPostResponse'
 
 const longitude = ref(-1)
 const latitude = ref(-1)
-const selectedValue = ref<string>('all')
 const posts = ref<EmotionalPost[]>([])
 
-// 2秒ごとに位置情報を取得してログに表示する
+// 20秒ごとに位置情報を取得してログに表示する
 onNuxtReady(() => {
   getCoordinates()
   setInterval(async () => {
     getCoordinates()
-  }, 20000)
+  }, 2000)
 })
 
 /**
@@ -82,6 +81,14 @@ onNuxtReady(() => {
 function getCoordinates() {
   console.debug('[getCoordinates] Start')
   navigator.geolocation.watchPosition(async (position) => {
+    // 移動していない場合は処理を実行しない
+    if (
+      position.coords.longitude === longitude.value &&
+      position.coords.latitude === latitude.value
+    ) {
+      return
+    }
+
     longitude.value = position.coords.longitude
     latitude.value = position.coords.latitude
     console.debug('[getCoordinates] Complete!', longitude.value)
@@ -143,6 +150,8 @@ const postComment = async (dto: RegisterCommentDto) => {
     return res.json()
   } catch (error) {
     return {}
+  } finally {
+    getCoordinates()
   }
 }
 
