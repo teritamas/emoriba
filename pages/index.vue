@@ -203,10 +203,13 @@ const columns = [
     value: 'ARASHI Anniversary Tour 5×20'
   }
 ]
-const onConfirm = ({ selectedValues }) => {
+const onConfirm = async ({ selectedValues }) => {
   selectedEvent.value = selectedValues[0]
   showPicker.value = false
   showToast(`イベント: ${selectedValues.join(',')}`)
+  // イベントが変更されたら更新する
+  const res = (await fetchEmotionalPosts()) as FetchPostResponse
+  posts.value = res.posts
 }
 const onChange = ({ selectedValues }) => {
   selectedEvent.value = selectedValues[0]
