@@ -9,12 +9,13 @@ body,
 #__nuxt,
 #__layout,
 .main {
-  width: 100%;
-  margin: 0px important!;
+  height: 100% !important;
   overflow: hidden;
 }
 
 #arjs-video {
+  margin-left: 0px !important;
+  object-fit: cover !important;
 }
 
 /*イベントピッカーの位置の調整*/
