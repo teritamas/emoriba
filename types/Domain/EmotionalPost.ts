@@ -4,6 +4,6 @@ export interface EmotionalPost {
   id: string
   comment: string
   imageUrl: string
-  position: GeoPoint
+  coordinates: GeoPoint
   createdAt: string
 }
