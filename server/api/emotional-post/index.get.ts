@@ -8,11 +8,13 @@ export default defineEventHandler(async (event) => {
     const query = getQuery(event)
     const latitude = query.latitude as number
     const longitude = query.longitude as number
+    const eventName = query.eventName as string
 
     // Firestoreから投稿を取得
     const posts = (await fetchPost(
       latitude,
-      longitude
+      longitude,
+      eventName
     )) as unknown as EmotionalPost[]
 
     return {

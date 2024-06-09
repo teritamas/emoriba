@@ -8,13 +8,25 @@ const firestoreClient = geoFirestore
  *
  * 近くの投稿を取得する
  */
-export const fetchPost = async (lat: number, lng: number) => {
+export const fetchPost = async (
+  lat: number,
+  lng: number,
+  eventName: string
+) => {
   try {
     const latitude = Number(lat)
     const longitude = Number(lng)
-    console.log('latitude: ', latitude, 'longitude: ', longitude)
+    console.log(
+      'latitude: ',
+      latitude,
+      'longitude: ',
+      longitude,
+      'eventName: ',
+      eventName
+    )
     const posts = await firestoreClient
       .collection('posts')
+      .where('eventName', '==', eventName)
       .near({
         center: new GeoPoint(latitude, longitude),
         radius: 100 // 1km以内
