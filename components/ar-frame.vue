@@ -9,16 +9,6 @@
       <img id="balloon" src="/objects/balloon.svg" />
     </a-assets>
 
-    <a-text
-      value="この文章が表示される時、ARは有効です"
-      font="/fonts/hui-msdf.json"
-      font-image="/fonts/hui-msdf.png"
-      look-at="[gps-camera]"
-      scale="2 2 2"
-      negate="false"
-      :position="'0 0 0'"
-      :gps-entity-place="`latitude: ${deviceLatitude}; longitude: ${deviceLongitude};`"
-    />
     <a-plane
       v-for="(post, index) in props.posts"
       :key="index"
@@ -27,17 +17,18 @@
       scale="2 2 2"
       look-at="[gps-camera]"
       :width="`${speechBubbleWidth(post.comment)}`"
-      height="1.3"
+      height="0.9"
     />
     <a-entity
       v-for="(post, index) in props.posts"
       :key="index"
       :text="`value: ${post.comment}; font: /fonts/hui-msdf.json; font-image: /fonts/hui-msdf.png; align: center; width: 2; height: 2; negate: false; color: ${speechBubbleColor};`"
-      scale="15 15 15"
+      scale="10 10 10"
       look-at="[gps-camera]"
+      :position="'0 0 0'"
       :gps-entity-place="`latitude: ${post.coordinates._latitude}; longitude: ${post.coordinates._longitude};`"
     />
-    <a-camera gps-camera rotation-reade />
+    <a-camera gps-camera="minDistance: 1" rotation-reader />
   </a-scene>
 </template>
 
@@ -61,8 +52,8 @@ const props = defineProps({
 })
 
 const speechBubbleWidth = function (comment: string) {
-  const MIN_WIDTH = 6
-  const length = comment.length * 1.1
+  const MIN_WIDTH = 3
+  const length = comment.length * 0.7
 
   return length >= MIN_WIDTH ? length : MIN_WIDTH
 }
