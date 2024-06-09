@@ -45,7 +45,7 @@ const fetchEmotionalPosts = async () => {
   // 位置情報はクエリパラメータとして送信する
   try {
     const res = await fetch(
-      `api/emotional-post?longitude=${longitude.value}&latitude=${latitude.value}`,
+      `api/emotional-post?longitude=${longitude.value}&latitude=${latitude.value}&eventName=all`,
       {
         method: 'get',
         headers: {
