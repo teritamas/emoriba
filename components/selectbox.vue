@@ -20,8 +20,8 @@
               {{ item.createdAt }}
             </time>
             <h3
-              v-for="event in item.events"
-              :key="event.index"
+              v-for="(event, index) in item.events"
+              :key="index"
               class="text-md font-semibold text-gray-900 dark:text-white"
             >
               # {{ event }}
@@ -60,6 +60,7 @@ export default defineComponent({
     const list = ref<HTMLElement | null>(null)
 
     const selectedItem = computed(() => {
+      emit('update:modelValue', selectedValue.value)
       return props.items.find((item) => item.value === selectedValue.value)
     })
 

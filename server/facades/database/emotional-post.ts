@@ -41,6 +41,7 @@ export const registerPost = async (
   comment: string,
   latitude: number,
   longitude: number,
+  eventName: string,
   imageUrl: string | null = null
 ) => {
   try {
@@ -49,6 +50,7 @@ export const registerPost = async (
       comment,
       imageUrl,
       coordinates,
+      eventName,
       // 位置情報による検索を行うために、geohashを追加する必要がある
       // https://firebase.google.com/docs/firestore/solutions/geoqueries?hl=ja
       g: {

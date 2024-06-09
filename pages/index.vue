@@ -34,9 +34,9 @@
     </div>
 
     <selectbox
-      v-model="selectedValue"
       class="absolute top-4 left-4 bg-white text-xs p-2 rounded-lg"
       :items="items"
+      :model-value="selectedValue"
     />
 
     <div ref="cameraElement">
@@ -57,6 +57,7 @@ import type RegisterCommentDto from '@/types/Models/RegisterComment/RegisterComm
 import type RegisterCommentRequest from '@/types/Models/RegisterComment/RegisterCommentRequest'
 const longitude = ref(-1)
 const latitude = ref(-1)
+const selectedValue = ref<string>('')
 
 // 2秒ごとに位置情報を取得してログに表示する
 onNuxtReady(() => {
@@ -67,8 +68,9 @@ onNuxtReady(() => {
     })
     // どちらかが-1の場合は位置情報が取得できていないので処理を実行しない
     if (longitude.value === -1 || latitude.value === -1) {
+      return
     }
-    // const res = await fetchEmotionalPosts();
+    await fetchEmotionalPosts()
   }, 10000)
 })
 
@@ -108,7 +110,8 @@ const postComment = async (dto: RegisterCommentDto) => {
           longitude: longitude.value,
           latitude: latitude.value
         },
-        comment: dto.comment
+        comment: dto.comment,
+        eventName: selectedValue.value!
       } as RegisterCommentRequest)
     )
     const res = await fetch('api/emotional-post', {
@@ -122,34 +125,35 @@ const postComment = async (dto: RegisterCommentDto) => {
   }
 }
 
+/**
+ * サイドバーの開閉状態を管理する
+ */
 const isSidebarOpen = ref(false)
-
 const toggleSidebar = (): void => {
   isSidebarOpen.value = !isSidebarOpen.value
 }
 
-/// / 要素の参照を作成
+/**
+ *
+ * カメラエリアの高さと幅を取得する
+ */
+// 要素の参照を作成
 const cameraElement = ref<HTMLElement | null>(null)
-
-/// / カメラエリアの高さと幅の状態を作成
+// カメラエリアの高さと幅の状態を作成
 const cameraAreaHeight = ref<number>(0)
 const cameraAreaWidth = ref<number>(0)
-
-/// / 要素の高さと幅を更新する関数
+// 要素の高さと幅を更新する関数
 const updateDimensions = (): void => {
   if (cameraElement.value) {
     cameraAreaHeight.value = cameraElement.value.offsetHeight
     cameraAreaWidth.value = cameraElement.value.offsetWidth
   }
 }
-
-/// / ResizeObserverのインスタンスを作成
+// ResizeObserverのインスタンスを作成
 let resizeObserver: ResizeObserver | null = null
-
 onMounted(() => {
   // ResizeObserverのコールバックを設定
   resizeObserver = new ResizeObserver(updateDimensions)
-
   // 監視する要素を指定
   if (cameraElement.value) {
     resizeObserver.observe(cameraElement.value)
@@ -158,7 +162,6 @@ onMounted(() => {
   // 初回ロード時にサイズを取得
   updateDimensions()
 })
-
 onUnmounted(() => {
   // コンポーネントがアンマウントされたときに監視を解除
   if (resizeObserver && cameraElement.value) {
@@ -166,6 +169,9 @@ onUnmounted(() => {
   }
 })
 
+/**
+ * ドームシティのイベント一覧, 本来はAPIから取得するが現時点ではダミーを使用
+ */
 const items = ref<DomeCityEvent[]>([
   {
     createdAt: '2024-06-09',
@@ -225,5 +231,6 @@ const items = ref<DomeCityEvent[]>([
   }
 ])
 
-const selectedValue = ref<string>('')
+// FIXME: SelectedBoxの挙動がよくわからないので、とりあえず初期値を設定
+selectedValue.value = items.value[0].events[0]
 </script>
