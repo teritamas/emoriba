@@ -1,6 +1,10 @@
 [![Deploy to Firebase Hosting on merge](https://github.com/teritamas/en-xross-xr-hackathon/actions/workflows/firebase-hosting-merge.yml/badge.svg?branch=main)](https://github.com/teritamas/en-xross-xr-hackathon/actions/workflows/firebase-hosting-merge.yml)
 
-# En Xross By Tokyo Dome City
+# エモリバ
+
+エモリバは東京ドームシティで巻き起こる熱狂を、WebARで可視化します。同時に過去のイベントの盛り上がりも振り返り、過去の熱狂を追体験することができます。
+
+- [作品紹介ページ - Proto Pedia](https://protopedia.net/prototype/5257)
 
 ## Quick Start
 
