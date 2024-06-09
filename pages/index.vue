@@ -1,55 +1,58 @@
 <template>
-  <button
-    v-if="isSidebarOpen"
-    type="button"
-    class="inline-flex items-center p-2 mt-2 ms-3 text-sm text-gray-500 rounded-lg hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-gray-200"
-    @click="toggleSidebar"
-  >
-    <span class="sr-only">Open sidebar</span>
-    <svg
-      class="w-6 h-6"
-      aria-hidden="true"
-      fill="currentColor"
-      viewBox="0 0 20 20"
-      xmlns="http://www.w3.org/2000/svg"
-    >
-      <path
-        clip-rule="evenodd"
-        fill-rule="evenodd"
-        d="M2 4.75A.75.75 0 012.75 4h14.5a.75.75 0 010 1.5H2.75A.75.75 0 012 4.75zm0 10.5a.75.75 0 01.75-.75h7.5a.75.75 0 010 1.5h-7.5a.75.75 0 01-.75-.75zM2 10a.75.75 0 01.75-.75h14.5a.75.75 0 010 1.5H2.75A.75.75 0 012 10z"
-      />
-    </svg>
-  </button>
-  <!--<sidebar-view v-if="!isSidebarOpen" @toggleSidebar="toggleSidebar" />-->
-
-  <!--<application-title class="absolute top-4 left-4" />-->
   <div>
-    <ar-windows />
-    <animated-cube />
-  </div>
-  <div class="absolute top-4 right-4 bg-white text-xs p-2 rounded-lg">
-    <p>longitude: {{ longitude }}</p>
-    <p>latitude: {{ latitude }}</p>
-  </div>
+    <button
+      v-if="isSidebarOpen"
+      type="button"
+      class="inline-flex items-center p-2 mt-2 ms-3 text-sm text-gray-500 rounded-lg hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-gray-200"
+      @click="toggleSidebar"
+    >
+      <span class="sr-only">Open sidebar</span>
+      <svg
+        class="w-6 h-6"
+        aria-hidden="true"
+        fill="currentColor"
+        viewBox="0 0 20 20"
+        xmlns="http://www.w3.org/2000/svg"
+      >
+        <path
+          clip-rule="evenodd"
+          fill-rule="evenodd"
+          d="M2 4.75A.75.75 0 012.75 4h14.5a.75.75 0 010 1.5H2.75A.75.75 0 012 4.75zm0 10.5a.75.75 0 01.75-.75h7.5a.75.75 0 010 1.5h-7.5a.75.75 0 01-.75-.75zM2 10a.75.75 0 01.75-.75h14.5a.75.75 0 010 1.5H2.75A.75.75 0 012 10z"
+        />
+      </svg>
+    </button>
+    <!--<sidebar-view v-if="!isSidebarOpen" @toggleSidebar="toggleSidebar" />-->
 
-  <selectbox
-    v-model="selectedValue"
-    class="absolute top-4 left-4 bg-white text-xs p-2 rounded-lg"
-    :items="items"
-  />
+    <!--<application-title class="absolute top-4 left-4" />-->
+    <div>
+      <ar-windows />
+      <animated-cube />
+    </div>
+    <div class="absolute top-4 right-4 bg-white text-xs p-2 rounded-lg">
+      <p>longitude: {{ longitude }}</p>
+      <p>latitude: {{ latitude }}</p>
+    </div>
 
-  <div ref="cameraElement">
-    <footer class="fixed bottom-0 left-0 z-20 p-4 w-full">
-      <input-form
-        :camera-area-width="cameraAreaWidth"
-        :camera-area-height="cameraAreaHeight"
-        @register-button-click="postComment"
-      />
-    </footer>
+    <selectbox
+      v-model="selectedValue"
+      class="absolute top-4 left-4 bg-white text-xs p-2 rounded-lg"
+      :items="items"
+    />
+
+    <div ref="cameraElement">
+      <footer class="fixed bottom-0 left-0 z-20 p-4 w-full">
+        <input-form
+          :camera-area-width="cameraAreaWidth"
+          :camera-area-height="cameraAreaHeight"
+          @register-button-click="postComment"
+        />
+      </footer>
+    </div>
   </div>
 </template>
 
 <script setup lang="ts">
+import type DomeCityEvent from '@/types/Domain/DomeCityEvent'
 import type RegisterCommentDto from '@/types/Models/RegisterComment/RegisterCommentDto'
 import type RegisterCommentRequest from '@/types/Models/RegisterComment/RegisterCommentRequest'
 const longitude = ref(-1)
@@ -85,7 +88,6 @@ const fetchEmotionalPosts = async () => {
         }
       }
     )
-    console.log(res)
     return res.json()
   } catch (error) {
     return {}
@@ -96,7 +98,6 @@ const fetchEmotionalPosts = async () => {
 
 // コメントを投稿する
 const postComment = async (dto: RegisterCommentDto) => {
-  console.log(dto, 'hoge')
   // 位置情報とコメントを送信する
   try {
     const formData = new FormData()
@@ -115,7 +116,6 @@ const postComment = async (dto: RegisterCommentDto) => {
       headers: {},
       body: formData
     })
-    console.log(res)
     return res.json()
   } catch (error) {
     return {}
@@ -166,42 +166,42 @@ onUnmounted(() => {
   }
 })
 
-const items = ref<SelectItem[]>([
+const items = ref<DomeCityEvent[]>([
   {
     createdAt: '2024-06-09',
-    commentcounts: 32,
+    commentCounts: 32,
     events: ['巨人－オリックス']
   },
   {
     createdAt: '2024-06-10',
-    commentcounts: 78,
+    commentCounts: 78,
     events: ['第73回全日本大学野球選手権大会']
   },
   {
     createdAt: '2024-06-11',
-    commentcounts: 12,
+    commentCounts: 12,
     events: ['第73回全日本大学野球選手権大会', 'DREAM STAR FIGHTING MARIGOLD']
   },
   {
     createdAt: '2024-06-12',
-    commentcounts: 93,
+    commentCounts: 93,
     events: ['第73回全日本大学野球選手権大会', 'Fortune Dream 9']
   },
   {
     createdAt: '2024-06-13',
-    commentcounts: 45,
+    commentCounts: 45,
     events: [
       'NANIMONO 2nd ANNIVERSARY ONEMAN 『インキャが世界を救う★ 〜なにものといっしょ〜』'
     ]
   },
   {
     createdAt: '2024-06-14',
-    commentcounts: 67,
+    commentCounts: 67,
     events: ['TOSHIKI KADOMATSU Performance 2024 "C.U.M" vol. 1']
   },
   {
     createdAt: '2024-06-15',
-    commentcounts: 19,
+    commentCounts: 19,
     events: [
       'TOSHIKI KADOMATSU Performance 2024 "C.U.M" vol. 1',
       'プロボクシング（DANGANジム）',
@@ -210,17 +210,17 @@ const items = ref<SelectItem[]>([
   },
   {
     createdAt: '2024-06-16',
-    commentcounts: 81,
+    commentCounts: 81,
     events: [
       '櫻坂46 4th ARENA TOUR 2024新・櫻前線 -Go on back?- IN 東京ドーム',
-      'i☆Ris 9th Live Tour 2024 愛たくて...Full Ener9y!!',
+      'i☆Ris 9th Live Tour 2024 愛たくて...Full Energy!!',
       '大日本プロレス',
       'ミキハウスランド'
     ]
   },
   {
     createdAt: '2024-06-17',
-    commentcounts: 62,
+    commentCounts: 62,
     events: ['プロボクシング（三迫ジム）']
   }
 ])
