@@ -55,32 +55,39 @@
 import type DomeCityEvent from '@/types/Domain/DomeCityEvent'
 import type RegisterCommentDto from '@/types/Models/RegisterComment/RegisterCommentDto'
 import type RegisterCommentRequest from '@/types/Models/RegisterComment/RegisterCommentRequest'
+import type { EmotionalPost } from '@/types/Domain/EmotionalPost'
+
 const longitude = ref(-1)
 const latitude = ref(-1)
 const selectedValue = ref<string>('all')
-
-/**
- * 端末の情報を利用して位置情報を取得する
- */
-const getCoordinates = () => {
-  navigator.geolocation.getCurrentPosition((position) => {
-    longitude.value = position.coords.longitude
-    latitude.value = position.coords.latitude
-  })
-}
+const posts = ref<EmotionalPost[]>([])
 
 // 2秒ごとに位置情報を取得してログに表示する
 onNuxtReady(() => {
   getCoordinates()
   setInterval(async () => {
     getCoordinates()
+  }, 20000)
+})
+
+/**
+ * 端末の情報を利用して位置情報を取得し、その位置情報を元に感情投稿を取得する
+ */
+function getCoordinates() {
+  console.debug('[getCoordinates] Start')
+  navigator.geolocation.watchPosition(async (position) => {
+    longitude.value = position.coords.longitude
+    latitude.value = position.coords.latitude
+    console.debug('[getCoordinates] Complete!', longitude.value)
     // どちらかが-1の場合は位置情報が取得できていないので処理を実行しない
     if (longitude.value === -1 || latitude.value === -1) {
       return
     }
-    await fetchEmotionalPosts()
-  }, 10000)
-})
+    const res = (await fetchEmotionalPosts()) as FetchPostResponse
+    posts.value = res.posts
+    console.log('posts', posts.value)
+  })
+}
 
 // 位置情報から周辺300m以内の投稿を取得する
 const isLoading = ref(false)
@@ -90,7 +97,7 @@ const fetchEmotionalPosts = async () => {
   // 位置情報はクエリパラメータとして送信する
   try {
     const res = await fetch(
-      `api/emotional-post?longitude=${longitude.value}&latitude=${latitude.value}&eventName=${selectedValue.value}`,
+      `api/emotional-post?longitude=${longitude.value}&latitude=${latitude.value}&eventName=all`,
       {
         method: 'get',
         headers: {
