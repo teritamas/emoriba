@@ -57,7 +57,7 @@ import type RegisterCommentDto from '@/types/Models/RegisterComment/RegisterComm
 import type RegisterCommentRequest from '@/types/Models/RegisterComment/RegisterCommentRequest'
 const longitude = ref(-1)
 const latitude = ref(-1)
-const selectedValue = ref<string>('')
+const selectedValue = ref<string>('all')
 
 // 2秒ごとに位置情報を取得してログに表示する
 onNuxtReady(() => {
@@ -82,7 +82,7 @@ const fetchEmotionalPosts = async () => {
   // 位置情報はクエリパラメータとして送信する
   try {
     const res = await fetch(
-      `api/emotional-post?longitude=${longitude.value}&latitude=${latitude.value}`,
+      `api/emotional-post?longitude=${longitude.value}&latitude=${latitude.value}&eventName=${selectedValue.value}`,
       {
         method: 'get',
         headers: {
