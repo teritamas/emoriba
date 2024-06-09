@@ -1,21 +1,67 @@
 <template>
-  <div class="absolute top-4 right-4 bg-gray-200 text-xs p-2 rounded-lg">
-    <p>longitude: {{ longitude }}</p>
-    <p>latitude: {{ latitude }}</p>
-  </div>
+  <button
+    v-if="isSidebarOpen"
+    type="button"
+    class="inline-flex items-center p-2 mt-2 ms-3 text-sm text-gray-500 rounded-lg hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-gray-200"
+    @click="toggleSidebar"
+  >
+    <span class="sr-only">Open sidebar</span>
+    <svg
+      class="w-6 h-6"
+      aria-hidden="true"
+      fill="currentColor"
+      viewBox="0 0 20 20"
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      <path
+        clip-rule="evenodd"
+        fill-rule="evenodd"
+        d="M2 4.75A.75.75 0 012.75 4h14.5a.75.75 0 010 1.5H2.75A.75.75 0 012 4.75zm0 10.5a.75.75 0 01.75-.75h7.5a.75.75 0 010 1.5h-7.5a.75.75 0 01-.75-.75zM2 10a.75.75 0 01.75-.75h14.5a.75.75 0 010 1.5H2.75A.75.75 0 012 10z"
+      />
+    </svg>
+  </button>
+  <!--<sidebar-view v-if="!isSidebarOpen" @toggleSidebar="toggleSidebar" />-->
+
+  <!-- AR.jsの仕様でBody直下である必要がある -->
   <ar-frame
     :posts="posts"
     :device-latitude="latitude"
     :device-longitude="longitude"
   />
+  <div>
+    <animated-cube />
+  </div>
+  <div class="absolute top-4 right-4 bg-white text-xs p-2 rounded-lg">
+    <p>longitude: {{ longitude }}</p>
+    <p>latitude: {{ latitude }}</p>
+  </div>
+
+  <selectbox
+    class="absolute top-4 left-4 bg-white text-xs p-2 rounded-lg"
+    :items="items"
+    :model-value="selectedValue"
+  />
+
+  <div ref="cameraElement">
+    <footer class="fixed bottom-0 left-0 z-20 p-4 w-full">
+      <input-form
+        :camera-area-width="cameraAreaWidth"
+        :camera-area-height="cameraAreaHeight"
+        @register-button-click="postComment"
+      />
+    </footer>
+  </div>
 </template>
 
 <script setup lang="ts">
-import type FetchPostResponse from '@/types/Models/FetchPosts/FetchPostResponse'
-import type { EmotionalPost } from '~/types/Domain/EmotionalPost'
+import type DomeCityEvent from '@/types/Domain/DomeCityEvent'
+import type RegisterCommentDto from '@/types/Models/RegisterComment/RegisterCommentDto'
+import type RegisterCommentRequest from '@/types/Models/RegisterComment/RegisterCommentRequest'
+import type { EmotionalPost } from '@/types/Domain/EmotionalPost'
 
 const longitude = ref(-1)
 const latitude = ref(-1)
+const selectedValue = ref<string>('all')
 const posts = ref<EmotionalPost[]>([])
 
 // 2秒ごとに位置情報を取得してログに表示する
@@ -68,4 +114,140 @@ const fetchEmotionalPosts = async () => {
     isLoading.value = false
   }
 }
+
+// コメントを投稿する
+const postComment = async (dto: RegisterCommentDto) => {
+  // 位置情報とコメントを送信する
+  try {
+    const formData = new FormData()
+    formData.append(
+      'request',
+      JSON.stringify({
+        coordinates: {
+          longitude: longitude.value,
+          latitude: latitude.value
+        },
+        comment: dto.comment,
+        eventName: selectedValue.value!
+      } as RegisterCommentRequest)
+    )
+    const res = await fetch('api/emotional-post', {
+      method: 'post',
+      headers: {},
+      body: formData
+    })
+    return res.json()
+  } catch (error) {
+    return {}
+  }
+}
+
+/**
+ * サイドバーの開閉状態を管理する
+ */
+const isSidebarOpen = ref(false)
+const toggleSidebar = (): void => {
+  isSidebarOpen.value = !isSidebarOpen.value
+}
+
+/**
+ *
+ * カメラエリアの高さと幅を取得する
+ */
+// 要素の参照を作成
+const cameraElement = ref<HTMLElement | null>(null)
+// カメラエリアの高さと幅の状態を作成
+const cameraAreaHeight = ref<number>(0)
+const cameraAreaWidth = ref<number>(0)
+// 要素の高さと幅を更新する関数
+const updateDimensions = (): void => {
+  if (cameraElement.value) {
+    cameraAreaHeight.value = cameraElement.value.offsetHeight
+    cameraAreaWidth.value = cameraElement.value.offsetWidth
+  }
+}
+// ResizeObserverのインスタンスを作成
+let resizeObserver: ResizeObserver | null = null
+onMounted(() => {
+  // ResizeObserverのコールバックを設定
+  resizeObserver = new ResizeObserver(updateDimensions)
+  // 監視する要素を指定
+  if (cameraElement.value) {
+    resizeObserver.observe(cameraElement.value)
+  }
+
+  // 初回ロード時にサイズを取得
+  updateDimensions()
+})
+onUnmounted(() => {
+  // コンポーネントがアンマウントされたときに監視を解除
+  if (resizeObserver && cameraElement.value) {
+    resizeObserver.unobserve(cameraElement.value)
+  }
+})
+
+/**
+ * ドームシティのイベント一覧, 本来はAPIから取得するが現時点ではダミーを使用
+ */
+const items = ref<DomeCityEvent[]>([
+  {
+    createdAt: '2024-06-09',
+    commentCounts: 32,
+    events: ['巨人－オリックス']
+  },
+  {
+    createdAt: '2024-06-10',
+    commentCounts: 78,
+    events: ['第73回全日本大学野球選手権大会']
+  },
+  {
+    createdAt: '2024-06-11',
+    commentCounts: 12,
+    events: ['第73回全日本大学野球選手権大会', 'DREAM STAR FIGHTING MARIGOLD']
+  },
+  {
+    createdAt: '2024-06-12',
+    commentCounts: 93,
+    events: ['第73回全日本大学野球選手権大会', 'Fortune Dream 9']
+  },
+  {
+    createdAt: '2024-06-13',
+    commentCounts: 45,
+    events: [
+      'NANIMONO 2nd ANNIVERSARY ONEMAN 『インキャが世界を救う★ 〜なにものといっしょ〜』'
+    ]
+  },
+  {
+    createdAt: '2024-06-14',
+    commentCounts: 67,
+    events: ['TOSHIKI KADOMATSU Performance 2024 "C.U.M" vol. 1']
+  },
+  {
+    createdAt: '2024-06-15',
+    commentCounts: 19,
+    events: [
+      'TOSHIKI KADOMATSU Performance 2024 "C.U.M" vol. 1',
+      'プロボクシング（DANGANジム）',
+      '櫻坂46 4th ARENA TOUR 2024新・櫻前線 -Go on back?- IN 東京ドーム'
+    ]
+  },
+  {
+    createdAt: '2024-06-16',
+    commentCounts: 81,
+    events: [
+      '櫻坂46 4th ARENA TOUR 2024新・櫻前線 -Go on back?- IN 東京ドーム',
+      'i☆Ris 9th Live Tour 2024 愛たくて...Full Energy!!',
+      '大日本プロレス',
+      'ミキハウスランド'
+    ]
+  },
+  {
+    createdAt: '2024-06-17',
+    commentCounts: 62,
+    events: ['プロボクシング（三迫ジム）']
+  }
+])
+
+// FIXME: SelectedBoxの挙動がよくわからないので、とりあえず初期値を設定
+selectedValue.value = items.value[0].events[0]
 </script>
