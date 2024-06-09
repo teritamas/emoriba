@@ -33,7 +33,8 @@ export default defineEventHandler(async (event) => {
     const registeredPost = await registerPost(
       requestBody!.comment,
       requestBody!.coordinates.latitude,
-      requestBody!.coordinates.longitude
+      requestBody!.coordinates.longitude,
+      requestBody!.eventName
     )
 
     // 登録したデータを返却

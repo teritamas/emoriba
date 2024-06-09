@@ -68,9 +68,35 @@
 </template>
 
 <script setup lang="ts">
-import type RegisterCommentDto from '@/types/Models/RegisterComment/RegisterCommentDto'
 import { gsap, Power3, Back, Power1, Power2 } from 'gsap'
+import type RegisterCommentDto from '@/types/Models/RegisterComment/RegisterCommentDto'
 
+const props = defineProps({
+  cameraAreaHeight: {
+    type: Number
+  },
+  cameraAreaWidth: {
+    type: Number
+  }
+})
+
+// 入力フォームの値を取得する
+const comment = ref('')
+const emits = defineEmits(['registerButtonClick'])
+/**
+ * 登録ボタンがクリックされたときの処理
+ */
+const registerButtonClick = () => {
+  const dto = {
+    comment: comment.value
+  } as RegisterCommentDto
+  emits('registerButtonClick', dto) // 投稿する
+  comment.value = '' // 入力フォームをクリアする
+}
+
+/**
+ * この行以降、アニメーションの処理
+ */
 class SVGElement {
   element: Element
 
@@ -97,36 +123,6 @@ const createSVG = (type: string) => {
   return new SVGElement(el)
 }
 
-// 入力フォームの値を取得する
-const comment = ref('')
-
-const emits = defineEmits(['registerButtonClick'])
-/**
- * 登録ボタンがクリックされたときの処理
- */
-const registerButtonClick = () => {
-  const dto = {
-    comment: comment.value
-  } as RegisterCommentDto
-  emits('registerButtonClick', dto) // 投稿する
-  toggleModal() // モーダルを閉じる
-}
-
-const showModal = ref(false)
-
-// True/Falseを入れ替える
-const toggleModal = () => {
-  showModal.value = !showModal.value
-}
-
-const props = defineProps({
-  cameraAreaHeight: {
-    type: Number
-  },
-  cameraAreaWidth: {
-    type: Number
-  }
-})
 const svg = ref<SVGElement>()
 const text = ref<HTMLElement>()
 const offscreenText = ref<HTMLElement>()

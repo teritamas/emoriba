@@ -5,14 +5,14 @@
         {{ selectedItem?.createdAt || 'Select an option' }}
         <span class="arrow">{{ isOpen ? '▲' : '▼' }}</span>
       </div>
-      <div v-if="isOpen" class="dropdown" ref="dropdown">
-        <ul class="dropdown-list" ref="list">
+      <div v-if="isOpen" ref="dropdown" class="dropdown">
+        <ul ref="list" class="dropdown-list">
           <li
             v-for="item in items"
             :key="item.createdAt"
-            @click="selectItem(item)"
             :value="item.createdAt"
             :class="{ selected: item.createdAt === selectedValue }"
+            @click="DomeCityEvent(item)"
           >
             <time
               class="mb-1 text-sm font-normal leading-none text-gray-400 dark:text-gray-500"
@@ -20,14 +20,14 @@
               {{ item.createdAt }}
             </time>
             <h3
-              v-for="event in item.events"
-              :key="event.index"
+              v-for="(event, index) in item.events"
+              :key="index"
               class="text-md font-semibold text-gray-900 dark:text-white"
             >
               # {{ event }}
             </h3>
             <small class="text-gray-400 font-normal"
-              >{{ item.commentcounts }} comments</small
+              >{{ item.commentCounts }} comments</small
             >
           </li>
         </ul>
@@ -38,17 +38,13 @@
 
 <script lang="ts">
 import { defineComponent, ref, computed, onMounted, onUnmounted } from 'vue'
-
-interface SelectItem {
-  value: string
-  label: string
-}
+import type DomeCityEvent from '@/types/Domain/DomeCityEvent'
 
 export default defineComponent({
   name: 'SmoothSelectBox',
   props: {
     items: {
-      type: Array as () => SelectItem[],
+      type: Array as () => DomeCityEvent[],
       required: true
     },
     modelValue: {
@@ -64,6 +60,7 @@ export default defineComponent({
     const list = ref<HTMLElement | null>(null)
 
     const selectedItem = computed(() => {
+      emit('update:modelValue', selectedValue.value)
       return props.items.find((item) => item.value === selectedValue.value)
     })
 
@@ -71,7 +68,7 @@ export default defineComponent({
       isOpen.value = !isOpen.value
     }
 
-    const selectItem = (item: SelectItem) => {
+    const DomeCityEvent = (item: DomeCityEvent) => {
       selectedValue.value = item.value
       emit('update:modelValue', item.value)
       isOpen.value = false
@@ -113,7 +110,7 @@ export default defineComponent({
       isOpen,
       selectedValue,
       toggleDropdown,
-      selectItem,
+      DomeCityEvent,
       selectedItem,
       dropdown,
       list

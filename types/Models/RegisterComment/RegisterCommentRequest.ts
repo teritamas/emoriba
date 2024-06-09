@@ -4,4 +4,5 @@ export default interface RegisterCommentRequest {
     longitude: number
   }
   comment: string
+  eventName: string
 }
