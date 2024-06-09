@@ -35,6 +35,9 @@ export default defineNuxtConfig({
           src: 'https://www.unpkg.com/@ar-js-org/ar.js@3.4.5/aframe/build/aframe-ar.js'
         }
       ]
+    },
+    experimental: {
+      externalVue: true
     }
   }
 })
