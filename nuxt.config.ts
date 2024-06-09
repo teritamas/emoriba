@@ -21,13 +21,18 @@ export default defineNuxtConfig({
       ],
       // npmでインストールしたいが、ドキュメントが薄く、動作が安定しないのでsrcで読み込む
       script: [
-        { src: 'https://aframe.io/releases/1.3.0/aframe.min.js' },
-        {
-          src: 'https://raw.githack.com/AR-js-org/AR.js/master/aframe/build/aframe-ar-nft.js'
-        },
+        { src: 'https://aframe.io/releases/1.6.0/aframe.min.js' },
         {
           // entityにlook-at属性を追加するとカメラの方を向くようになる
           src: 'https://unpkg.com/aframe-look-at-component@0.8.0/dist/aframe-look-at-component.min.js'
+        },
+        {
+          // 最新のバージョンだとlongitudeを取得できない不具合があるので、3.4.5を使用
+          src: 'https://www.unpkg.com/@ar-js-org/ar.js@3.4.5/three.js/build/ar-threex-location-only.js'
+        },
+        {
+          // 最新のバージョンだとlongitudeを取得できない不具合があるので、3.4.5を使用
+          src: 'https://www.unpkg.com/@ar-js-org/ar.js@3.4.5/aframe/build/aframe-ar.js'
         }
       ]
     }
