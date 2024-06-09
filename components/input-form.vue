@@ -3,7 +3,7 @@
     <svg ref="svg" />
     <p id="text" ref="text" class="text" />
     <p id="offscreen-text" ref="offscreenText" class="offscreen-text" />
-    <p class="bg-yellow-200 font-bold bg-opacity-30">
+    <p class="bg-yellow-200 font-bold bg-opacity-30 inline p-0.5">
       いまの気持ちをシェアしよう！
       <span class="count">{{ characterCount }} / {{ maxLength }}文字</span>
     </p>
@@ -51,11 +51,9 @@ const props = defineProps({
   }
 })
 
-// 入力フォームの字数制限とバリデーション
-
+// 入力フォームの字数制限
 const maxLength = ref('30')
 const characterCount = computed(() => comment.value.length)
-const isLimit = computed(() => characterCount.value >= maxLength)
 
 // 入力フォームの値を取得する
 const comment = ref('')
