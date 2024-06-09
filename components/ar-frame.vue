@@ -2,8 +2,8 @@
   <a-scene
     vr-mode-ui="enabled: false"
     loading-screen="enabled: false;"
+    arjs="sourceType: webcam; debugUIEnabled: true;"
     renderer="logarithmicDepthBuffer: true;"
-    arjs="sourceType: webcam; debugUIEnabled: false;"
   >
     <a-assets>
       <img id="balloon" src="/objects/balloon.svg" />
@@ -16,28 +16,24 @@
       look-at="[gps-camera]"
       scale="2 2 2"
       negate="false"
-      :position="'0 -0 0'"
+      :position="'0 0 0'"
       :gps-entity-place="`latitude: ${deviceLatitude}; longitude: ${deviceLongitude};`"
     />
     <a-plane
       v-for="(post, index) in props.posts"
       :key="index"
       :gps-entity-place="`latitude: ${post.coordinates._latitude}; longitude: ${post.coordinates._longitude};`"
-      :position="'0 ' + (index * 0.6 - 1) + ' 0'"
       :material="`src: #balloon; color: ; transparent: true; opacity: 0.9; side: double;`"
-      rotation="-90 0 0"
+      scale="2 2 2"
       look-at="[gps-camera]"
       :width="`${speechBubbleWidth(post.comment)}`"
-      height="0.45"
+      height="1.3"
     />
-
     <a-entity
       v-for="(post, index) in props.posts"
       :key="index"
-      :text="`value: ${post.comment}; font: /fonts/hui-msdf.json; font-image: /fonts/hui-msdf.png; align: center; width: 2; negate: false; color: ${speechBubbleColor};`"
-      :position="'-2 ' + (index * 0.6 - 0.92) + ' -0.95'"
-      rotation="-90 0 0"
-      scale="2 2 2"
+      :text="`value: ${post.comment}; font: /fonts/hui-msdf.json; font-image: /fonts/hui-msdf.png; align: center; width: 2; height: 2; negate: false; color: ${speechBubbleColor};`"
+      scale="15 15 15"
       look-at="[gps-camera]"
       :gps-entity-place="`latitude: ${post.coordinates._latitude}; longitude: ${post.coordinates._longitude};`"
     />
@@ -65,8 +61,8 @@ const props = defineProps({
 })
 
 const speechBubbleWidth = function (comment: string) {
-  const MIN_WIDTH = 1.4
-  const length = comment.length * 0.2
+  const MIN_WIDTH = 6
+  const length = comment.length * 1.1
 
   return length >= MIN_WIDTH ? length : MIN_WIDTH
 }
