@@ -59,13 +59,21 @@ const longitude = ref(-1)
 const latitude = ref(-1)
 const selectedValue = ref<string>('all')
 
+/**
+ * 端末の情報を利用して位置情報を取得する
+ */
+const getCoordinates = () => {
+  navigator.geolocation.getCurrentPosition((position) => {
+    longitude.value = position.coords.longitude
+    latitude.value = position.coords.latitude
+  })
+}
+
 // 2秒ごとに位置情報を取得してログに表示する
 onNuxtReady(() => {
+  getCoordinates()
   setInterval(async () => {
-    navigator.geolocation.getCurrentPosition((position) => {
-      longitude.value = position.coords.longitude
-      latitude.value = position.coords.latitude
-    })
+    getCoordinates()
     // どちらかが-1の場合は位置情報が取得できていないので処理を実行しない
     if (longitude.value === -1 || latitude.value === -1) {
       return
