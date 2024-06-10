@@ -12,7 +12,6 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - run: npm ci && npm run build -- --preset=firebase
-
       - uses: w9jds/firebase-action@master
         with:
           args: deploy --only functions:server,hosting
