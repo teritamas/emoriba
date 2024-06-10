@@ -11,9 +11,10 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+      - run: npm ci && npm run build -- --preset=firebase
 
-      - name: Install npm packages
-        run: npm ci && npm run build -- --preset=firebase
-
-      - name: Deploy to Firebase Hosting
-        run: npx firebase deploy --only functions:server,hosting --token "${{ secrets.FIREBASE_SERVICE_ACCOUNT_EN_XROSS_XR_HACKATHON }}"
+      - uses: w9jds/firebase-action@master
+        with:
+          args: deploy --only functions:server,hosting
+        env:
+          GCP_SA_KEY: ${{ secrets.FIREBASE_SERVICE_ACCOUNT_EN_XROSS_XR_HACKATHON }}
