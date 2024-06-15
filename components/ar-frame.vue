@@ -26,7 +26,7 @@
         position="0 0.19 0.1"
       />
     </a-plane>
-    <a-camera gps-camera="minDistance: 1" rotation-reader />
+    <a-camera gps-camera="minDistance: 2; maxDistance: 100" rotation-reader />
   </a-scene>
 </template>
 
