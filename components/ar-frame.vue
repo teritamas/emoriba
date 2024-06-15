@@ -23,7 +23,7 @@
         :key="index"
         :text="`value: ${post.comment}; font: /fonts/mplus-msdf.json; font-image: /fonts/mplus-msdf.png; align: center; width: 2.5; height: 2; negate: false;`"
         scale="4 4 4"
-        position="0 0.2 0.1"
+        position="0 0.1 0.1"
         look-at="[gps-camera]"
       />
     </a-plane>
