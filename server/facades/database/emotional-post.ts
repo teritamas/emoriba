@@ -29,7 +29,7 @@ export const fetchPost = async (
       .where('eventName', '==', eventName)
       .near({
         center: new GeoPoint(latitude, longitude),
-        radius: 0.03 // 30m以内
+        radius: 0.1 // 100m以内
       })
       .limit(10) // 10件のみ取得
       .get()
