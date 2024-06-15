@@ -8,16 +8,15 @@
       <span class="count">{{ characterCount }} / {{ maxLength }}文字</span>
     </p>
     <div class="flex">
-      <div class="voltage-container">
-        <button
-          type="button"
-          class="voice-button w-15 h-15 text-white bg-white focus:ring-4 focus:outline-none focus:ring-green-300 rounded-lg text-sm px-2 py-2 text-center ml-2"
-          @click="startSpeechRecognition"
-        >
-          <icon-mic />
-        </button>
-        <div class="voltage-bar"></div>
-      </div>
+      <div class="voltage-bar"></div>
+
+      <button
+        type="button"
+        class="voice-button w-15 h-15 text-white bg-white focus:ring-4 focus:outline-none focus:ring-green-300 rounded-lg text-sm px-2 py-2 text-center ml-2"
+        @click="startSpeechRecognition"
+      >
+        <icon-mic />
+      </button>
       <input
         id="input"
         ref="input"
@@ -92,6 +91,7 @@ const voiceVolume = ref(0)
 
 const startSpeechRecognition = () => {
   let maxValue = 0
+  comment.value = ''
 
   const SpeechRecognition =
     window.SpeechRecognition || window.webkitSpeechRecognition
@@ -124,14 +124,35 @@ const startSpeechRecognition = () => {
 
   recognition.onend = () => {
     voiceButton.classList.remove('blinking')
-    voiceButton.classList.remove('low-volume', 'normal-volume', 'high-volume')
+    voiceButton.classList.remove(
+      'first-vol',
+      'second-vol',
+      'third-vol',
+      'forth-vol',
+      'fifth-vol',
+      'sixth-vol',
+      'seventh-vol'
+    )
     voltageBar.style.height = 0
-    console.log(voltageBar.style.height)
+    stopVolumeMeasurement()
+  }
+
+  recognition.stop = () => {
+    voiceButton.classList.remove('blinking')
+    voiceButton.classList.remove(
+      'first-vol',
+      'second-vol',
+      'third-vol',
+      'forth-vol',
+      'fifth-vol',
+      'sixth-vol',
+      'seventh-vol'
+    )
+    voltageBar.style.height = 0
     stopVolumeMeasurement()
   }
 
   recognition.onresult = (event) => {
-    comment.value = ''
     const transcript = event.results[0][0].transcript
     comment.value += transcript
     onInputChange()
@@ -140,7 +161,15 @@ const startSpeechRecognition = () => {
   recognition.onerror = (event) => {
     console.error('音声認識エラー:', event.error)
     voiceButton.classList.remove('blinking')
-    voiceButton.classList.remove('low-volume', 'normal-volume', 'high-volume')
+    voiceButton.classList.remove(
+      'first-vol',
+      'second-vol',
+      'third-vol',
+      'forth-vol',
+      'fifth-vol',
+      'sixth-vol',
+      'seventh-vol'
+    )
     voltageBar.style.height = 0
     stopVolumeMeasurement()
   }
@@ -165,20 +194,45 @@ const startSpeechRecognition = () => {
       const length = array.length
       // ボルテージに基づいてクラスを変更
       voiceVolume.value = 0
-      voiceButton.classList.remove('low-volume', 'normal-volume', 'high-volume')
-      voltageBar.classList.remove('low-volume', 'normal-volume', 'high-volume')
+      voiceButton.classList.remove(
+        'first-vol',
+        'second-vol',
+        'third-vol',
+        'forth-vol',
+        'fifth-vol',
+        'sixth-vol',
+        'seventh-vol'
+      )
+      voltageBar.classList.remove(
+        'first-vol',
+        'second-vol',
+        'third-vol',
+        'forth-vol',
+        'fifth-vol',
+        'sixth-vol',
+        'seventh-vol'
+      )
       for (let i = 0; i < length; i++) {
         if (array[i] > maxValue) maxValue = array[i]
         if (maxValue > voiceVolume.value) voiceVolume.value = maxValue
         if (voiceVolume.value <= 100) {
-          voiceButton.classList.add('low-volume')
-          voltageBar.classList.add('low-volume')
+          voiceButton.classList.add('first-vol')
+          voltageBar.classList.add('first-vol')
         } else if (voiceVolume.value <= 150) {
-          voiceButton.classList.add('normal-volume')
-          voltageBar.classList.add('normal-volume')
-        } else if (voiceVolume.value >= 200) {
-          voiceButton.classList.add('high-volume')
-          voltageBar.classList.add('high-volume')
+          voiceButton.classList.add('second-vol')
+          voltageBar.classList.add('second-vol')
+        } else if (voiceVolume.value <= 200) {
+          voiceButton.classList.add('third-vol')
+          voltageBar.classList.add('third-vol')
+        } else if (voiceVolume.value <= 250) {
+          voiceButton.classList.add('forth-vol')
+          voltageBar.classList.add('forth-vol')
+        } else if (voiceVolume.value <= 300) {
+          voiceButton.classList.add('fifth-vol')
+          voltageBar.classList.add('fifth-vol')
+        } else if (voiceVolume.value >= 300) {
+          voiceButton.classList.add('sixth-vol')
+          voltageBar.classList.add('sixth-vol')
         }
         voltageBar.style.height = `${voiceVolume.value}px`
       }
@@ -203,7 +257,11 @@ const startSpeechRecognition = () => {
     }
   }
 
+  // 最大入力秒数を設定
   recognition.start()
+  setTimeout(() => {
+    recognition.stop()
+  }, 10000) // 10秒後に音声認識を停止
 }
 
 /**
@@ -561,15 +619,31 @@ p span {
     background-color 0.5s ease;
 }
 
-.low-volume {
-  background-color: #4caf50; /* 緑 */
+/* ボリュームレベルに対応するクラス */
+.first-vol {
+  background-color: #9400d3; /* 紫 */
+}
+.second-vol {
+  background-color: #9f6aa7; /* 藍 */
 }
 
-.normal-volume {
-  background-color: #ffeb3b; /* 黄色 */
+.third-vol {
+  background-color: #5476b3; /* 青 */
 }
 
-.high-volume {
-  background-color: #f44336; /* 赤 */
+.forth-vol {
+  background-color: #70b984; /* 緑 */
+}
+
+.fifth-vol {
+  background-color: #fbdb4a; /* 黄色 */
+}
+
+.sixth-vol {
+  background-color: #eb547d; /* 橙 */
+}
+
+.seventh-vol {
+  background-color: #eb547d; /* 赤 */
 }
 </style>
