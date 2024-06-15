@@ -13,9 +13,10 @@
       v-for="(post, index) in props.posts"
       :key="index"
       :gps-entity-place="`latitude: ${post.coordinates._latitude}; longitude: ${post.coordinates._longitude};`"
-      material="`src: #balloon; transparent: true; opacity: 0.95; side: double;`"
+      material="src: #balloon; transparent: true; opacity: 0.95; side: double;"
       scale="2 2 2"
       look-at="[gps-camera]"
+      :position="`${position()}`"
       :width="`${speechBubbleWidth(post.comment)}`"
       height="1.2"
     >
@@ -53,5 +54,10 @@ const speechBubbleWidth = function (comment: string) {
   const length = comment.length * 0.7
 
   return length >= MIN_WIDTH ? length : MIN_WIDTH
+}
+const position = () => {
+  const positionZ = Math.random() * 2 - 1
+
+  return `0 0 ${positionZ}`
 }
 </script>
