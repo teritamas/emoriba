@@ -14,7 +14,7 @@
       :key="index"
       :gps-entity-place="`latitude: ${post.coordinates._latitude}; longitude: ${post.coordinates._longitude};`"
       material="src: #balloon; transparent: true; opacity: 0.95; side: double;"
-      scale="2 2 2"
+      :scale="`${scale(post.voiceVolume)}`"
       look-at="[gps-camera]"
       :position="`${position()}`"
       :width="`${speechBubbleWidth(post.comment)}`"
@@ -33,6 +33,7 @@
 
 <script setup lang="ts">
 import type { EmotionalPost } from '@/types/Domain/EmotionalPost'
+import { VoiceVolume } from '@/types/Constant/VoiceVolume'
 
 const props = defineProps({
   posts: {
@@ -55,9 +56,22 @@ const speechBubbleWidth = function (comment: string) {
 
   return length >= MIN_WIDTH ? length : MIN_WIDTH
 }
+
 const position = () => {
   const positionZ = Math.random() * 2 - 1
-
   return `0 0 ${positionZ}`
+}
+
+const scale = (voiceVolume: VoiceVolume) => {
+  switch (voiceVolume) {
+    case VoiceVolume.LOW:
+      return '1 1 1'
+    case VoiceVolume.MEDIUM:
+      return '2 2 2'
+    case VoiceVolume.HIGH:
+      return '4 4 4'
+    default:
+      return '1 1 1'
+  }
 }
 </script>
