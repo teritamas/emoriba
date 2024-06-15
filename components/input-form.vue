@@ -8,6 +8,16 @@
       <span class="count">{{ characterCount }} / {{ maxLength }}文字</span>
     </p>
     <div class="flex">
+      <div class="voltage-container">
+        <button
+          type="button"
+          class="voice-button w-15 h-15 text-white bg-white focus:ring-4 focus:outline-none focus:ring-green-300 rounded-lg text-sm px-2 py-2 text-center ml-2"
+          @click="startSpeechRecognition"
+        >
+          <icon-mic />
+        </button>
+        <div class="voltage-bar"></div>
+      </div>
       <input
         id="input"
         ref="input"
@@ -71,6 +81,119 @@ const registerButtonClick = () => {
     addPrompt(0)
   }, 1000)
   //comment.value = '' // 入力フォームをクリアする
+}
+
+/**
+ * 音声認識を開始する関数
+ */
+
+const voiceVolume = ref(0)
+
+const startSpeechRecognition = () => {
+  const SpeechRecognition =
+    window.SpeechRecognition || window.webkitSpeechRecognition
+  if (!SpeechRecognition) {
+    alert('このブラウザでは音声認識がサポートされていません。')
+    return
+  }
+
+  const recognition = new SpeechRecognition()
+  recognition.lang = 'ja-JP'
+  recognition.interimResults = false
+  recognition.maxAlternatives = 1
+
+  const voiceButton = document.querySelector('.voice-button')
+  const voltageBar = document.querySelector('.voltage-bar')
+
+  let audioContext
+  let scriptProcessor
+
+  recognition.onstart = () => {
+    voiceButton.classList.add('blinking')
+    navigator.mediaDevices
+      .getUserMedia({ audio: true })
+      .then(processVolume)
+      .catch((err) => {
+        console.error('マイクアクセスエラー:', err)
+        voiceButton.classList.remove('blinking')
+      })
+  }
+
+  recognition.onend = () => {
+    voiceButton.classList.remove('blinking')
+    voiceButton.classList.remove('low-volume', 'normal-volume', 'high-volume')
+    voltageBar.style.height = 0
+    console.log(voltageBar.style.height)
+    stopVolumeMeasurement()
+  }
+
+  recognition.onresult = (event) => {
+    comment.value = ''
+    const transcript = event.results[0][0].transcript
+    comment.value += transcript
+    onInputChange()
+  }
+
+  recognition.onerror = (event) => {
+    console.error('音声認識エラー:', event.error)
+    voiceButton.classList.remove('blinking')
+    voiceButton.classList.remove('low-volume', 'normal-volume', 'high-volume')
+    voltageBar.style.height = 0
+    stopVolumeMeasurement()
+  }
+
+  const processVolume = (stream) => {
+    audioContext = new AudioContext()
+    const analyser = audioContext.createAnalyser()
+    const microphone = audioContext.createMediaStreamSource(stream)
+    scriptProcessor = audioContext.createScriptProcessor(2048, 1, 1)
+
+    analyser.smoothingTimeConstant = 0.8
+    analyser.fftSize = 1024
+
+    microphone.connect(analyser)
+    analyser.connect(scriptProcessor)
+    scriptProcessor.connect(audioContext.destination)
+
+    scriptProcessor.onaudioprocess = () => {
+      const array = new Uint8Array(analyser.frequencyBinCount)
+      analyser.getByteFrequencyData(array)
+      let maxValue = 0
+
+      const length = array.length
+      // ボルテージに基づいてクラスを変更
+      voiceVolume.value = 0
+      voiceButton.classList.remove('low-volume', 'normal-volume', 'high-volume')
+      voltageBar.classList.remove('low-volume', 'normal-volume', 'high-volume')
+      for (let i = 0; i < length; i++) {
+        if (array[i] > maxValue) maxValue = array[i]
+        if (maxValue > voiceVolume.value) voiceVolume.value = maxValue
+        if (voiceVolume.value <= 100) {
+          voiceButton.classList.add('low-volume')
+          voltageBar.classList.add('low-volume')
+        } else if (voiceVolume.value <= 150) {
+          voiceButton.classList.add('normal-volume')
+          voltageBar.classList.add('normal-volume')
+        } else if (voiceVolume.value >= 200) {
+          voiceButton.classList.add('high-volume')
+          voltageBar.classList.add('high-volume')
+        }
+        voltageBar.style.height = `${voiceVolume.value}px`
+      }
+    }
+  }
+  const stopVolumeMeasurement = () => {
+    if (scriptProcessor) {
+      scriptProcessor.disconnect()
+      scriptProcessor = null
+    }
+    if (audioContext) {
+      audioContext.close()
+      audioContext = null
+    }
+  }
+
+  recognition.start()
 }
 
 /**
@@ -394,5 +517,49 @@ p span {
 
 .text span {
   position: absolute;
+}
+
+/*
+    音声入力中であることを示すために、ボタンにアニメーションを追加
+    ボタンの背景色を点滅させるアニメーションを追加します
+ */
+@keyframes blink {
+  0% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.5;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+
+.blinking {
+  animation: blink 1s infinite;
+}
+
+/* 声量のボルテージのCSS */
+.voltage-bar {
+  z-index: -3;
+  position: fixed;
+  bottom: 0;
+  width: 30px;
+  height: 0px;
+  transition:
+    width 0.5s ease,
+    background-color 0.5s ease;
+}
+
+.low-volume {
+  background-color: #4caf50; /* 緑 */
+}
+
+.normal-volume {
+  background-color: #ffeb3b; /* 黄色 */
+}
+
+.high-volume {
+  background-color: #f44336; /* 赤 */
 }
 </style>
