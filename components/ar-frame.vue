@@ -2,7 +2,7 @@
   <a-scene
     vr-mode-ui="enabled: false"
     loading-screen="enabled: false;"
-    arjs="sourceType: webcam; debugUIEnabled: true;"
+    arjs="sourceType: webcam; debugUIEnabled: false;"
     renderer="logarithmicDepthBuffer: true;"
   >
     <a-assets>
