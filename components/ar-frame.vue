@@ -13,7 +13,7 @@
       v-for="(post, index) in props.posts"
       :key="index"
       :gps-entity-place="`latitude: ${post.coordinates._latitude}; longitude: ${post.coordinates._longitude};`"
-      :material="`src: #balloon; color: ; transparent: true; opacity: 0.9; side: double; color: ${speechBubbleColor()};`"
+      :material="`src: #balloon; transparent: true; opacity: 0.95; side: double;`"
       scale="2 2 2"
       look-at="[gps-camera]"
       :width="`${speechBubbleWidth(post.comment)}`"
@@ -21,10 +21,9 @@
     >
       <a-entity
         :key="index"
-        :text="`value: ${post.comment}; font: /fonts/mplus-msdf.json; font-image: /fonts/mplus-msdf.png; align: center; width: 2.5; height: 2; negate: false;`"
+        :text="`value: ${post.comment}; font: /fonts/mplus-msdf.json; font-image: /fonts/mplus-msdf.png; color: black; align: center; width: 2.5; height: 2; negate: false;`"
         scale="4 4 4"
-        position="0 0.2 0.1"
-        look-at="[gps-camera]"
+        position="0 0.19 0.1"
       />
     </a-plane>
     <a-camera gps-camera="minDistance: 1" rotation-reader />
@@ -33,7 +32,6 @@
 
 <script setup lang="ts">
 import type { EmotionalPost } from '@/types/Domain/EmotionalPost'
-import { ColorPalette } from '@/types/Constant/ColorPalette'
 
 const props = defineProps({
   posts: {
@@ -55,10 +53,5 @@ const speechBubbleWidth = function (comment: string) {
   const length = comment.length * 0.7
 
   return length >= MIN_WIDTH ? length : MIN_WIDTH
-}
-
-const speechBubbleColor = () => {
-  // colorPaletteからランダムで色を選択
-  return ColorPalette[Math.floor(Math.random() * ColorPalette.length)].main
 }
 </script>

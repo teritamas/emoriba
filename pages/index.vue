@@ -66,6 +66,8 @@ import type FetchPostResponse from '~/types/Models/FetchPosts/FetchPostResponse'
 const longitude = ref(-1)
 const latitude = ref(-1)
 const posts = ref<EmotionalPost[]>([])
+const EARTH_RADIUS = 6371000
+const ONE_METER_IN_DEGREE = (1 / EARTH_RADIUS) * (180 / Math.PI)
 
 // 20秒ごとに位置情報を取得してログに表示する
 onNuxtReady(() => {
@@ -131,12 +133,17 @@ const postComment = async (dto: RegisterCommentDto) => {
   // 位置情報とコメントを送信する
   try {
     const formData = new FormData()
+    // ランダムで-1~1mの値を追加する
+    const setLatitude =
+      latitude.value + ONE_METER_IN_DEGREE * (Math.random() * 2 - 1)
+    const setLongitude =
+      longitude.value + ONE_METER_IN_DEGREE * (Math.random() * 2 - 1)
     formData.append(
       'request',
       JSON.stringify({
         coordinates: {
-          longitude: longitude.value,
-          latitude: latitude.value
+          longitude: setLongitude,
+          latitude: setLatitude
         },
         comment: dto.comment,
         eventName: selectedEvent.value!
