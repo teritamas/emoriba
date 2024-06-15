@@ -74,7 +74,7 @@ onNuxtReady(() => {
   getCoordinates()
   setInterval(async () => {
     getCoordinates()
-  }, 2000)
+  }, 20000)
 })
 
 /**
