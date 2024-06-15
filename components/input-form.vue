@@ -61,6 +61,7 @@ const characterCount = computed(() => comment.value.length)
 
 // 入力フォームの値を取得する
 const comment = ref('')
+const voiceVolumeScore = ref(VoiceVolume.LOW)
 const emits = defineEmits(['registerButtonClick'])
 /**
  * 登録ボタンがクリックされたときの処理
@@ -68,7 +69,7 @@ const emits = defineEmits(['registerButtonClick'])
 const registerButtonClick = () => {
   const dto = {
     comment: comment.value,
-    voiceVolume: VoiceVolume.HIGH
+    voiceVolume: voiceVolume.value
   } as unknown as RegisterCommentDto
   emits('registerButtonClick', dto) // 投稿する
 
@@ -90,6 +91,8 @@ const registerButtonClick = () => {
 const voiceVolume = ref(0)
 
 const startSpeechRecognition = () => {
+  let maxValue = 0
+
   const SpeechRecognition =
     window.SpeechRecognition || window.webkitSpeechRecognition
   if (!SpeechRecognition) {
@@ -158,7 +161,6 @@ const startSpeechRecognition = () => {
     scriptProcessor.onaudioprocess = () => {
       const array = new Uint8Array(analyser.frequencyBinCount)
       analyser.getByteFrequencyData(array)
-      let maxValue = 0
 
       const length = array.length
       // ボルテージに基づいてクラスを変更
@@ -190,6 +192,14 @@ const startSpeechRecognition = () => {
     if (audioContext) {
       audioContext.close()
       audioContext = null
+    }
+    // MaxValueに応じてLow, Normal, Highのクラスを設定
+    if (maxValue <= 100) {
+      voiceVolumeScore.value = VoiceVolume.LOW
+    } else if (maxValue <= 150) {
+      voiceVolumeScore.value = VoiceVolume.MEDIUM
+    } else if (maxValue >= 200) {
+      voiceVolumeScore.value = VoiceVolume.HIGH
     }
   }
 
