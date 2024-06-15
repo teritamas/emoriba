@@ -67,7 +67,7 @@ const longitude = ref(-1)
 const latitude = ref(-1)
 const posts = ref<EmotionalPost[]>([])
 const EARTH_RADIUS = 6371000
-const ONE_METER_IN_DEGREE = (1 / EARTH_RADIUS) * (180 / Math.PI)
+const TEN_METER_IN_DEGREE = (10 / EARTH_RADIUS) * (180 / Math.PI)
 
 // 20秒ごとに位置情報を取得してログに表示する
 onNuxtReady(() => {
@@ -135,9 +135,9 @@ const postComment = async (dto: RegisterCommentDto) => {
     const formData = new FormData()
     // ランダムで-1~1mの値を追加する
     const setLatitude =
-      latitude.value + ONE_METER_IN_DEGREE * (Math.random() * 2 - 1)
+      latitude.value + TEN_METER_IN_DEGREE * (Math.random() * 2 - 1)
     const setLongitude =
-      longitude.value + ONE_METER_IN_DEGREE * (Math.random() * 2 - 1)
+      longitude.value + TEN_METER_IN_DEGREE * (Math.random() * 2 - 1)
     formData.append(
       'request',
       JSON.stringify({
