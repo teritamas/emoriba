@@ -13,7 +13,7 @@
       v-for="(post, index) in props.posts"
       :key="index"
       :gps-entity-place="`latitude: ${post.coordinates._latitude}; longitude: ${post.coordinates._longitude};`"
-      :material="`src: #balloon; transparent: true; opacity: 0.95; side: double;`"
+      material="`src: #balloon; transparent: true; opacity: 0.95; side: double;`"
       scale="2 2 2"
       look-at="[gps-camera]"
       :width="`${speechBubbleWidth(post.comment)}`"
