@@ -83,10 +83,10 @@ onNuxtReady(() => {
 function getCoordinates() {
   console.debug('[getCoordinates] Start')
   navigator.geolocation.watchPosition(async (position) => {
-    // 移動していない場合は処理を実行しない
+    // 10m以上移動していない場合は処理を実行しない
     if (
-      position.coords.longitude === longitude.value &&
-      position.coords.latitude === latitude.value
+      longitude.value === position.coords.longitude &&
+      latitude.value === position.coords.latitude
     ) {
       return
     }
@@ -145,6 +145,7 @@ const postComment = async (dto: RegisterCommentDto) => {
           longitude: setLongitude,
           latitude: setLatitude
         },
+        voiceVolume: dto.voiceVolume,
         comment: dto.comment,
         eventName: selectedEvent.value!
       } as RegisterCommentRequest)
@@ -158,7 +159,9 @@ const postComment = async (dto: RegisterCommentDto) => {
   } catch (error) {
     return {}
   } finally {
-    getCoordinates()
+    // 投稿後に再度感情投稿を取得する
+    const res = (await fetchEmotionalPosts()) as FetchPostResponse
+    posts.value = res.posts
   }
 }
 

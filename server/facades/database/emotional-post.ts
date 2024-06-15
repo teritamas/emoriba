@@ -1,6 +1,8 @@
 import { GeoPoint } from 'firebase-admin/firestore'
 import * as geofire from 'geofire-common'
 import { geoFirestore } from '../firebase'
+import { VoiceVolume } from '@/types/Constant/VoiceVolume'
+import { EmotionalPost } from '@/types/Domain/EmotionalPost'
 
 const firestoreClient = geoFirestore
 
@@ -55,6 +57,7 @@ export const registerPost = async (
   latitude: number,
   longitude: number,
   eventName: string,
+  voiceVolume: VoiceVolume,
   imageUrl: string | null = null
 ) => {
   try {
@@ -64,6 +67,7 @@ export const registerPost = async (
       imageUrl,
       coordinates,
       eventName,
+      voiceVolume,
       // 位置情報による検索を行うために、geohashを追加する必要がある
       // https://firebase.google.com/docs/firestore/solutions/geoqueries?hl=ja
       g: {
@@ -74,7 +78,7 @@ export const registerPost = async (
         geopoint: coordinates
       },
       createdAt: new Date().toISOString()
-    }
+    } as unknown as EmotionalPost
     await firestoreClient.collection('posts').add(post)
     return post
   } catch (error) {

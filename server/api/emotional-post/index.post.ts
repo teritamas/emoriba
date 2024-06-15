@@ -34,7 +34,8 @@ export default defineEventHandler(async (event) => {
       requestBody!.comment,
       requestBody!.coordinates.latitude,
       requestBody!.coordinates.longitude,
-      requestBody!.eventName
+      requestBody!.eventName,
+      requestBody!.voiceVolume
     )
 
     // 登録したデータを返却

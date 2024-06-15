@@ -30,15 +30,18 @@
 </template>
 
 <script setup lang="ts">
-import { gsap, Power3, Back, Power1, Power2 } from 'gsap'
+import { gsap, Power3, Back, Power2 } from 'gsap'
 import type RegisterCommentDto from '@/types/Models/RegisterComment/RegisterCommentDto'
+import { VoiceVolume } from '@/types/Constant/VoiceVolume'
 
 const props = defineProps({
   cameraAreaHeight: {
-    type: Number
+    type: Number,
+    required: true
   },
   cameraAreaWidth: {
-    type: Number
+    type: Number,
+    required: true
   }
 })
 
@@ -54,8 +57,9 @@ const emits = defineEmits(['registerButtonClick'])
  */
 const registerButtonClick = () => {
   const dto = {
-    comment: comment.value
-  } as RegisterCommentDto
+    comment: comment.value,
+    voiceVolume: VoiceVolume.HIGH
+  } as unknown as RegisterCommentDto
   emits('registerButtonClick', dto) // 投稿する
 
   // 粒粒アニメーションを開始
