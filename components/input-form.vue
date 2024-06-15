@@ -8,15 +8,6 @@
       <span class="count">{{ characterCount }} / {{ maxLength }}文字</span>
     </p>
     <div class="flex">
-      <label
-        for="dropzone-file"
-        class="flex flex-col items-center justify-center px-2 w-10 h-10 border-2 border-gray-300 border-dashed rounded-lg cursor-pointer bg-gray-50"
-      >
-        <div class="flex flex-col items-center justify-center pt-5 pb-6">
-          <icon-camera />
-        </div>
-        <input id="dropzone-file" type="file" class="hidden" />
-      </label>
       <input
         id="input"
         ref="input"
@@ -66,7 +57,16 @@ const registerButtonClick = () => {
     comment: comment.value
   } as RegisterCommentDto
   emits('registerButtonClick', dto) // 投稿する
-  comment.value = '' // 入力フォームをクリアする
+
+  // 粒粒アニメーションを開始
+  explodeText()
+
+  // 1秒後に新しいコメントを設定する
+  setTimeout(() => {
+    comment.value = ''
+    addPrompt(0)
+  }, 1000)
+  //comment.value = '' // 入力フォームをクリアする
 }
 
 /**
@@ -90,11 +90,6 @@ class SVGElement {
 
 const selectSVG = (id: string) => {
   const el = document.getElementById(id)
-  return new SVGElement(el)
-}
-
-const createSVG = (type: string) => {
-  const el = document.createElementNS('http://www.w3.org/2000/svg', type)
   return new SVGElement(el)
 }
 
@@ -180,84 +175,6 @@ const animateLetterIn = (letter: HTMLElement) => {
   })
 }
 
-const addDecor = (letter: HTMLElement, color: { shades: string[] }) => {
-  setTimeout(() => {
-    const rect = letter.getBoundingClientRect()
-    const x0 = letter.offsetLeft + letter.offsetWidth / 2
-    const y0 = textCenter - textSize * 0.5
-    const shade = color.shades[Math.floor(Math.random() * 4)]
-    //for (let i = 0; i < 8; i++) addTri(x0, y0, shade)
-    //for (let i = 0; i < 8; i++) addCirc(x0, y0)
-  }, 150)
-}
-
-const addTri = (x0: number, y0: number, shade: string) => {
-  const tri = createSVG('polygon')
-  const a = Math.random()
-  const a2 = a + (-0.2 + Math.random() * 0.4)
-  const r = textSize * 0.52
-  const r2 = r + textSize * Math.random() * 0.2
-  const x = x0 + r * Math.cos(2 * Math.PI * a)
-  const y = y0 + r * Math.sin(2 * Math.PI * a)
-  const x2 = x0 + r2 * Math.cos(2 * Math.PI * a2)
-  const y2 = y0 + r2 * Math.sin(2 * Math.PI * a2)
-  const triSize = textSize * 0.1
-  const scale = 0.3 + Math.random() * 0.7
-  const offset = triSize * scale
-  tri.set('points', `0,0 ${triSize * 2},0 ${triSize},${triSize * 2}`)
-  tri.style('fill', shade)
-  svg.value!.appendChild(tri.element)
-  gsap.fromTo(
-    tri.element,
-    0.6,
-    {
-      rotation: Math.random() * 360,
-      scale: scale,
-      x: x - offset,
-      y: y - offset,
-      opacity: 1
-    },
-    {
-      x: x2 - offset,
-      y: y2 - offset,
-      opacity: 0,
-      ease: Power1.easeInOut,
-      onComplete: () => {
-        svg.value!.removeChild(tri.element)
-      }
-    }
-  )
-}
-
-const addCirc = (x0: number, y0: number) => {
-  const circ = createSVG('circle')
-  const a = Math.random()
-  const r = textSize * 0.52
-  const r2 = r + textSize
-  const x = x0 + r * Math.cos(2 * Math.PI * a)
-  const y = y0 + r * Math.sin(2 * Math.PI * a)
-  const x2 = x0 + r2 * Math.cos(2 * Math.PI * a)
-  const y2 = y0 + r2 * Math.sin(2 * Math.PI * a)
-  const circSize = textSize * 0.05 * Math.random()
-  circ.set('r', circSize)
-  circ.style('fill', '#eee')
-  svg.value!.appendChild(circ.element)
-  gsap.fromTo(
-    circ.element,
-    0.6,
-    { x: x - circSize, y: y - circSize, opacity: 1 },
-    {
-      x: x2 - circSize,
-      y: y2 - circSize,
-      opacity: 0,
-      ease: Power1.easeInOut,
-      onComplete: () => {
-        svg.value!.removeChild(circ.element)
-      }
-    }
-  )
-}
-
 const addLetter = (char: string, i: number) => {
   const letter = document.createElement('span')
   const oLetter = document.createElement('span')
@@ -275,7 +192,6 @@ const addLetter = (char: string, i: number) => {
     shift: false
   }
   animateLetterIn(letter)
-  addDecor(oLetter, color)
 }
 
 const addLetters = (value: string[]) => {
@@ -373,6 +289,68 @@ onMounted(() => {
 onUnmounted(() => {
   window.removeEventListener('resize', resizePage)
 })
+
+// 送信時のアニメーション
+const explodeText = () => {
+  letters.forEach((letter, i) => {
+    const particles = createParticleEffect(letter.onScreen, i)
+    gsap.to(letter.onScreen, {
+      duration: 1, // 少し遅く消える
+      x: `+=${Math.random() * 200 - 100}`, // 横方向の飛距離を適度に
+      y: `-= ${Math.random() * 200 + 100}`, // 縦方向を上昇するように変更
+      scale: 0,
+      opacity: 0,
+      ease: Power2.easeOut,
+      onComplete: () => {
+        text.value!.removeChild(letter.onScreen)
+        offscreenText.value!.removeChild(letter.offScreen)
+      }
+    })
+    particles.forEach((particle) => {
+      gsap.to(particle, {
+        duration: 2, // 粒粒のアニメーション時間を長くする
+        x: `+=${Math.random() * 200 - 100}`, // 横方向の飛距離を適度に
+        y: `-= ${Math.random() * 200 + 100}`, // 縦方向を上昇するように変更
+        opacity: 0,
+        scale: 0,
+        ease: Power2.easeOut,
+        onComplete: () => {
+          particle.remove()
+        }
+      })
+    })
+  })
+  letters.length = 0
+}
+
+const createParticleEffect = (
+  letter: HTMLElement,
+  index: number
+): HTMLElement[] => {
+  const particles: HTMLElement[] = []
+  const color = colors[index % colors.length]
+  const bounds = letter.getBoundingClientRect()
+  const letterWidth = bounds.width
+  const letterHeight = bounds.height
+  const particleSize = Math.min(letterWidth, letterHeight) / 10
+
+  for (let i = 0; i < 100; i++) {
+    // 粒粒の数を増やす
+    const particle = document.createElement('div')
+    particle.style.position = 'absolute'
+    particle.style.width = `${particleSize}px`
+    particle.style.height = `${particleSize}px`
+    particle.style.backgroundColor =
+      color.shades[Math.floor(Math.random() * color.shades.length)]
+    particle.style.borderRadius = '50%' // 丸い粒粒にする
+    particle.style.left = `${bounds.left + Math.random() * letterWidth}px`
+    particle.style.top = `${bounds.top + Math.random() * letterHeight}px`
+    document.body.appendChild(particle)
+    particles.push(particle)
+  }
+
+  return particles
+}
 </script>
 
 <style>
