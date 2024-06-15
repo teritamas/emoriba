@@ -6,28 +6,27 @@
     renderer="logarithmicDepthBuffer: true;"
   >
     <a-assets>
-      <img id="balloon" src="/objects/balloon.svg" />
+      <img id="balloon" src="/objects/speach_bubble_cute.svg" />
     </a-assets>
 
     <a-plane
       v-for="(post, index) in props.posts"
       :key="index"
       :gps-entity-place="`latitude: ${post.coordinates._latitude}; longitude: ${post.coordinates._longitude};`"
-      :material="`src: #balloon; color: ; transparent: true; opacity: 0.9; side: double;`"
+      :material="`src: #balloon; color: ; transparent: true; opacity: 0.9; side: double; color: ${speechBubbleColor()};`"
       scale="2 2 2"
       look-at="[gps-camera]"
       :width="`${speechBubbleWidth(post.comment)}`"
-      height="0.9"
-    />
-    <a-entity
-      v-for="(post, index) in props.posts"
-      :key="index"
-      :text="`value: ${post.comment}; font: /fonts/hui-msdf.json; font-image: /fonts/hui-msdf.png; align: center; width: 2; height: 2; negate: false; color: ${speechBubbleColor};`"
-      scale="10 10 10"
-      look-at="[gps-camera]"
-      :position="'0 0 0'"
-      :gps-entity-place="`latitude: ${post.coordinates._latitude}; longitude: ${post.coordinates._longitude};`"
-    />
+      height="1.5"
+    >
+      <a-entity
+        :key="index"
+        :text="`value: ${post.comment}; font: /fonts/hui-msdf.json; font-image: /fonts/hui-msdf.png; align: center; width: 2.5; height: 2; negate: false;`"
+        scale="4 4 4"
+        position="0 0.4 0.1"
+        look-at="[gps-camera]"
+      />
+    </a-plane>
     <a-camera gps-camera="minDistance: 1" rotation-reader />
   </a-scene>
 </template>
@@ -58,8 +57,8 @@ const speechBubbleWidth = function (comment: string) {
   return length >= MIN_WIDTH ? length : MIN_WIDTH
 }
 
-const speechBubbleColor = computed(() => {
+const speechBubbleColor = () => {
   // colorPaletteからランダムで色を選択
   return ColorPalette[Math.floor(Math.random() * ColorPalette.length)].main
-})
+}
 </script>
