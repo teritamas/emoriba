@@ -4,7 +4,12 @@
 
 エモリバは東京ドームシティで巻き起こる熱狂を、WebARで可視化します。同時に過去のイベントの盛り上がりも振り返り、過去の熱狂を追体験することができます。
 
-- [作品紹介ページ - Proto Pedia](https://protopedia.net/prototype/5257)
+- [作品紹介ページ - Proto Pedia](https://protopedia.net/prototype/private/6539b912-a3d9-472b-a9c1-c309e7994472)
+
+操作説明動画
+
+[![Youtubeの説明動画](http://img.youtube.com/vi/OFRWEAuJcNk/0.jpg)](https://youtu.be/OFRWEAuJcNk)
+
 
 ## Quick Start
 
