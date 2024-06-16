@@ -201,16 +201,16 @@ const selectedEvent = ref('リアルタイム')
 const columns = [
   { text: 'リアルタイム', value: 'リアルタイム' },
   {
-    text: '第73回全日本大学野球選手権大会',
-    value: '第73回全日本大学野球選手権大会'
+    text: 'アイドルXXのAnniversary Tour',
+    value: 'アイドルXXのAnniversary Tour'
   },
   {
-    text: 'オードリーのオールナイトニッポン in 東京ドーム',
-    value: 'オードリーのオールナイトニッポン in 東京ドーム'
+    text: '全日本大学野球選手権大会',
+    value: '全日本大学野球選手権大会'
   },
   {
-    text: 'ARASHI Anniversary Tour 5×20',
-    value: 'ARASHI Anniversary Tour 5×20'
+    text: 'お笑い芸人YYの単独ライブ in 東京ドーム',
+    value: 'お笑い芸人YYの単独ライブ in 東京ドーム'
   }
 ]
 const onConfirm = async ({ selectedValues }) => {
