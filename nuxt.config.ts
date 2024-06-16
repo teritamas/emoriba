@@ -19,6 +19,9 @@ export default defineNuxtConfig({
         { charset: 'utf-8' },
         { name: 'viewport', content: 'width=device-width, initial-scale=1' }
       ],
+      link: [
+        { rel: 'icon', type: 'image/png', href: '/favicon.png' } // これを追記する
+      ],
       // npmでインストールしたいが、ドキュメントが薄く、動作が安定しないのでsrcで読み込む
       script: [
         { src: 'https://aframe.io/releases/1.6.0/aframe.min.js' },
